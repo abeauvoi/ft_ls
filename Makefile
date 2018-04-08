@@ -6,91 +6,70 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2017/12/03 23:18:52 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/04/08 23:05:05 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = ft_ls
-VPATH = $(SRC_DIR)
+NAME 		= ft_ls
 
-SRC_DIR	= src/
-OBJ_DIR	= obj/
-SRC	= $(addprefix $(SRC_DIR), main.c no_arg.c print_err.c)
+#
+# Dirs
+#
 
-OBJ = $(addprefix $(OBJ_DIR), $(notdir $(SRC:.c=.o)))
+SRCS_DIR	= src
+OBJS_DIR	= obj
+LIB_DIR		= libft
+INC_DIRS	= $(addsuffix includes, ./ $(LIB_DIR)/)
+VPATH		= $(SRCS_DIR)
 
+#
+# Sources
+#
 
-CFLAGS = -Wall -Werror -Wextra
-INC_DIR = includes ft_printf/includes
-INC = $(addprefix -I, $(INC_DIR))
+SRCS		= main.c print_err.c parse_argv.c
 
-LIB = ftprintf
-LIB_DIR	= ft_printf
-LINK = $(addprefix -L,$(LIB_DIR)) $(addprefix -l,$(LIB))
+#
+# Build
+#
 
-## OUTPUT ######################################################################
+OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
+CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
+LFLAGS		= -L$(LIB_DIR) -lft
+LIB		= libft.a
+COMP		= $(CC) $(CFLAGS) -o $@ -c $<
+LINK		= $(CC) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)
 
-GREEN		= \033[32m
-RED			= \033[31m
-LBLUE		= \033[36m
-NC			= \033[0m
+#
+# Rules
+#
 
-OK_COLOR=\x1b[32;01m
-ERROR_COLOR=\x1b[31;01m
-WARN_COLOR=\x1b[33;01m
-OK_STRING=$(OK_COLOR)[OK]$(NC)
-ERROR_STRING=$(ERROR_COLOR)[ERRORS]$(NC)
-WARN_STRING=$(WARN_COLOR)[WARNINGS]$(NC)
+all: $(LIB_DIR)/$(LIB) $(NAME)
 
+debug: CFLAGS += -fsanitize=address -g3
+debug: LFLAGS += -fsanitize=address
+debug: all
 
-## RULES #######################################################################
+$(LIB_DIR)/$(LIB):
+	@make -C $(LIB_DIR)
 
-all: obj_dir $(NAME)
-	@true
+$(NAME): $(LIB_DIR)/$(LIB) $(OBJS)
+	$(LINK)
 
-$(NAME): msg $(OBJS)
-	@echo "\r\033[J └── $(NAME) [$(GREEN)OK$(NC)]"
+$(OBJS_DIR)/%.o: %.c
+	@mkdir -p $(OBJS_DIR)
+	$(COMP)
 
-
-$(OBJ_DIR)%.o: %.c
-	@echo "\r\033[J └── $(NAME)[\\] > $<\c"
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
-	@echo "\r\033[J └── $(NAME)[/] > $@\c"
-
-msg:
-	@echo "Creating:"
-
-obj_dir:
-	@mkdir -p $(OBJ_DIR)
-	
 clean:
-	@echo "$(LIB)\n └── \c"
-	@make -C $(LIB_DIR) $@ &> /dev/null || true
-	@echo "$(RED)rm ./obj $(NC)[$(GREEN)OK$(NC)]"
-	@echo "$(NAME)\n └── \c"
-	@$(RM) $(OBJS)
-	@echo "$(RED)rm ./obj $(NC)[$(GREEN)OK$(NC)]"
-	@rmdir $(OBJ_DIR) 2> /dev/null || true
+	@rm $(OBJS) 2> /dev/null || true
+	@make -C $(LIB_DIR) $@
+	@rm -rf $(OBJS_DIR)
+	@echo "cleaned .o files"
 
 fclean: clean
-	@make -C $(LIB_DIR) $@ &> /dev/null || true
-	@$(RM) $(NAME)
-	@echo " └── \c"
-	@echo "$(RED)rm $(NAME) $(NC)[$(GREEN)OK$(NC)]"
+	@rm $(NAME) 2> /dev/null || true
+	@make -C $(LIB_DIR) $@
+	@echo "removed binary"
 
 re: fclean all
 
-nr:
-	@echo "$(LBLUE)==== norminette ====$(NC)"
-	@echo "norme for $(NAME)"
-	@$	norminette $(SRC) > n.log
-	@cat n.log | grep -B 1 'Error' | sed 's/--/  │└── end file /g' \
-		| sed 's/Norme:/  ├┬─ NORME:/g' | sed 's/Error:/  │├── File :/g' \
-		| sed 's/Error/  │├──/g' > enorm.log
-	@echo "norm\t\t\c"
-	@if test ! -s enorm.log; then echo "\t$(OK_STRING)"; \
-		else echo "$(ERROR_STRING)" && cat enorm.log \
-		&& echo "  │└── end file\n  └── end NORME"; fi;
-	@$ rm -f n.log enorm.errors enorm.log
-
-.PHONY: all clean fclean re msg obj_dir
+.PHONY: all clean fclean re

@@ -1,21 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_strmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/04/15 22:35:35 by abeauvoi          #+#    #+#             */
+/*   Updated: 2017/11/27 04:18:50 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include <stdlib.h>
-#include "ft_ls.h"
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+char		*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	char	*new;
+	size_t	i;
+
+	new = ft_strnew(ft_strlen(s));
+	i = 0;
+	while (s[i])
+	{
+		new[i] = f(i, s[i]);
+		++i;
+	}
+	return (new);
 }

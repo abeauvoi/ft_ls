@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_strrchr2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/11/01 15:20:18 by abeauvoi          #+#    #+#             */
+/*   Updated: 2017/11/19 23:59:33 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include "libft_types.h"
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+int			ft_strrchr2(const char *const str, char c, size_t lenstr)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	int		i;
+
+	i = lenstr - 1;
+	while (i > 0 && str[i] != c)
+		--i;
+	return (i);
 }

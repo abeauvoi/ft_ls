@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_xdigittoint.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/04/24 16:20:27 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/02/20 19:41:30 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
-
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+int		ft_xdigittoint(char c)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	int	d;
+
+	d = c - '0';
+	if ((unsigned int)d < 10)
+		return (d);
+	d = c - 'a';
+	if ((unsigned int)d < 6)
+		return (d + 10);
+	d = c - 'A';
+	if ((unsigned int)d < 6)
+		return (d + 10);
+	return (-1);
 }

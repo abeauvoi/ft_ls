@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/04/17 18:26:19 by abeauvoi          #+#    #+#             */
+/*   Updated: 2017/11/27 04:06:13 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include "libft.h"
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+t_list		*ft_lstmap(t_list *list, t_list *(*f)(t_list *elem))
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	t_list	*lstmap;
+
+	lstmap = NULL;
+	while (list)
+	{
+		ft_lstpush(&lstmap, f(list));
+		list = list->next;
+	}
+	return (lstmap);
 }

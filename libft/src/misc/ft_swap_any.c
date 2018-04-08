@@ -1,21 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_gen_swap.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/11/16 14:41:09 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/01/15 05:21:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include "libft_types.h"
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+void		ft_swap_any(void *a, void *b, size_t size)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	unsigned char	c;
+	unsigned char	*ca;
+	unsigned char	*cb;
+
+	ca = (unsigned char *)a;
+	cb = (unsigned char *)b;
+	while (size--)
+	{
+		c = *ca;
+		*ca = *cb;
+		*cb = c;
+		++ca;
+		++cb;
+	}
 }

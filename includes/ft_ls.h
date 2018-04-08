@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/11/19 16:25:35 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/08 23:16:43 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,22 @@
 # define FT_LS_H
 
 # include <errno.h>
-# include "libft_types.h"
+# include <inttypes.h>
+# include "ft_printf.h"
 
 /*
-** Formatting
+** Macros 
 */
 
 # define MIN_COLUMN_WIDTH 3
-
-# ifndef S_COL_INFO
-#  define S_COL_INFO struct s_col_info
-
-struct	s_col_info
-{
-	t_bool	valid_len;
-	size_t	line_len;
-	size_t	*col_arr;
-};
-
-# endif
-
-/*
-** Error formats 
-*/
-
-# define FTLS_ERR_FMT_A	"%wft_ls: %s -- %c\n"
-# define FTLS_ERR_FMT_B	"%wft_ls: %s: %s\n"
+# define FILETYPE_LETTER "?pcdb-lswd"
+# define FT_LS_OPTIONS "larRt"
+# define ERR_FMT_A "%wError: %s -- (%c)\n"
+# define FT_LS_INVALID_OPT "Invalid option"
 
 /*
 ** Enum and structures
 */
-
-# ifndef E_FILETYPE
-#  define E_FILETYPE enum e_filetype
 
 enum	e_filetype
 {
@@ -61,18 +44,10 @@ enum	e_filetype
 	WHITEOUT,
 	ARG_DIRECTORY
 };
-# endif
 
-# define FILETYPE_LETTER "?pcdb-lswd"
-
-# define FT_LS_FLAGS "ABCFGHLOPRSTUW@abcdefghiklmnopqrstuwx1"
-
-# ifndef E_FLAGS
-#  define E_FLAGS enum e_flags
-
-enum	e_flags
+typedef enum	e_options
 {
-	ALMOST_ALL = 1 << 0,
+	ALMOST_ALL = 1,
 	ONE_PER_LINE = 1 << 1,
 	ALL = 1 << 2,
 	REVERSE = 1 << 3,
@@ -85,11 +60,7 @@ enum	e_flags
 	LONG_LIST = 1 << 10,
 	SIZE_SORT = 1 << 11,
 	COLOR = 1 << 12
-};
-# endif
-
-# ifndef E_ACL_TYPE
-#  define E_ACL_TYPE enum e_acl_type
+}				t_ls_opts;
 
 enum	e_acl_type
 {
@@ -97,10 +68,13 @@ enum	e_acl_type
 	ACL_T_LSM_CONTEXT_ONLY,
 	ACL_T_YES
 };
-# endif
 
-# ifndef S_FILEINFO
-#  define S_FILEINFO struct s_fileinfo
+struct	s_col_info
+{
+	t_bool	valid_len;
+	size_t	line_len;
+	size_t	*col_arr;
+};
 
 struct	s_fileinfo
 {
@@ -115,19 +89,15 @@ struct	s_fileinfo
 	t_bool	has_capability;
 	int	quoted;
 };
-# endif
 
-# ifndef S_LS
-#  define S_LS struct s_ls
-
-struct	s_ls
+typedef struct	s_ls
 {
-	enum e_flags	flags;
-};
-# endif
+	uint64_t	options;
+}				t_ls;
 
-void		no_arg(const char *const filename);
-void		print_err(const char *const format, const char *const s,
-		const char *const error, t_bool isfatal);
+void		print_error_and_exit(const char *format, const char *s,
+		const char *arg);
+void		parse_argv(const char *const *argv, const char *optstring,
+		uint64_t *options);
 
 #endif

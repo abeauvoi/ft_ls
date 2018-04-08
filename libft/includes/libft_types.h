@@ -1,21 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   libft_types.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/10/03 21:10:20 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/01/15 08:25:42 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#ifndef LIBFT_TYPES_H
+# define LIBFT_TYPES_H
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+# include <string.h>
+# include <stdint.h>
+# include <limits.h>
+
+typedef enum		e_bool
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
-}
+	FALSE,
+	TRUE
+}					t_bool;
+
+typedef struct		s_list
+{
+	void			*content;
+	size_t			content_size;
+	struct s_list	*next;
+}					t_list;
+
+typedef struct		s_str
+{
+	char	*s;
+	size_t	l;
+}					t_str;
+
+#endif

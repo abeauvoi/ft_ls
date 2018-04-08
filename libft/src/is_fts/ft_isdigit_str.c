@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_isdigit_str.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: abeauvoi <abeauvoi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2018/01/15 05:05:10 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/01/15 06:03:38 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include <libft.h>
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+t_bool		ft_isdigit_str(const char *s)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	while (ft_isdigit(*s))
+		++s;
+	return (*s == '\0');
+}
+
+t_bool		ft_isdigit_nstr(const char *s, size_t n)
+{
+	while (n-- && ft_isdigit(*s))
+		++s;
+	return (n == 0);
 }

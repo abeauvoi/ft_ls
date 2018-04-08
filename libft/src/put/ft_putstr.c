@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/04/15 21:30:46 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/01/10 23:52:37 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include "libft.h"
+#include <unistd.h>
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+void	ft_putstr(char const *str)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	write(1, str, ft_strlen(str));
 }

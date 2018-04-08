@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_strsub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2017/04/17 15:06:00 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/01/12 01:03:31 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
+#include "libft.h"
 
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+char		*ft_strsub(const char *s, unsigned int start, size_t len)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	char	*sub;
+
+	if ((sub = ft_strnew(len)) == NULL)
+		return (NULL);
+	return (ft_strncpy(sub, s + start, len));
 }

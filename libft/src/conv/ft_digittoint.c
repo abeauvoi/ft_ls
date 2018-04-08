@@ -1,21 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_err.c                                        :+:      :+:    :+:   */
+/*   ft_digittoint.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:11:56 by abeauvoi         ###   ########.fr       */
+/*   Created: 2018/02/21 04:16:23 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/02/21 04:17:03 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include "ft_ls.h"
-
-void	print_error_and_exit(const char *format, const char *error,
-		const char *arg)
+unsigned int	ft_digittoint(char c)
 {
-	ft_printf(format, 2, error, *arg);
-	exit(EXIT_FAILURE);
+	return ((unsigned int)c - '0');
 }
