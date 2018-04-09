@@ -1,31 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/09/28 19:12:54 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 09:51:52 by abeauvoi         ###   ########.fr       */
+/*   Created: 2018/04/09 06:59:42 by abeauvoi          #+#    #+#             */
+/*   Updated: 2018/04/09 09:50:00 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int			main(int argc, const char *const *argv)
+void	init(t_ls *info)
 {
-	t_ls	info;
+	info->options = 0;
+	info->outf = short_format;
+}
 
-	if (argc == 1)
-		print_usage();
-	else
-	{
-		++argv;
-		init(&info);
-		parse_argv(argv, &info.options);
-		sort_argv((const char **)argv);
-		setup(&info);
-		test(argv, info);
-	}
-	return (0);
+void	setup(t_ls *info)
+{
+	if (info->options & LONG_LIST)
+		info->outf = long_format;
 }

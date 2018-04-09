@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:16:43 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/09 09:50:16 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 # include "ft_printf.h"
 
 /*
-** Macros 
+** Macros
 */
 
 # define MIN_COLUMN_WIDTH 3
-# define FILETYPE_LETTER "?pcdb-lswd"
-# define FT_LS_OPTIONS "larRt"
+# define FILETYPE "pcdb-ls"
+# define FT_LS_OPTIONS "ARalrt"
 # define ERR_FMT_A "%wError: %s -- (%c)\n"
 # define FT_LS_INVALID_OPT "Invalid option"
 
@@ -47,20 +47,17 @@ enum	e_filetype
 
 typedef enum	e_options
 {
-	ALMOST_ALL = 1,
-	ONE_PER_LINE = 1 << 1,
-	ALL = 1 << 2,
-	REVERSE = 1 << 3,
-	RECURSIVE = 1 << 4,
-	MODIF_SORT = 1 << 5,
-	DISPLAY_GUID = 1 << 6,
-	SUPPRESS_OWNER = 1 << 7,
-	COL_DISPLAY = 1 << 8,
-	ACCESS_SORT = 1 << 9,
-	LONG_LIST = 1 << 10,
-	SIZE_SORT = 1 << 11,
-	COLOR = 1 << 12
+	ALMOST_ALL = 1U,
+	RECURSIVE = 1U << 1,
+	ALL = 1U << 2,
+	LONG_LIST = 1U << 3,
+	REVERSE = 1U << 4,
+	MODIF_SORT = 1U << 5,
+	OPTIONS
 }				t_ls_opts;
+
+# define DISPLAY_MASK (ALMOST_ALL | ALL)
+# define SORT_MASK (REVERSE | MODIF_SORT)
 
 enum	e_acl_type
 {
@@ -93,11 +90,33 @@ struct	s_fileinfo
 typedef struct	s_ls
 {
 	uint64_t	options;
+	void		(*outf)(const char *);
 }				t_ls;
 
+/*
+** Core
+*/
+
+void		parse_argv(const char *const *argv, uint64_t *flags);
+void		sort_argv(const char **argv);
+void		init(t_ls *info);
+void		setup(t_ls *info);
+void		test(const char *const *argv, t_ls info);
+
+/*
+** Error management
+*/
+
+void		ft_perror(const char *arg);
 void		print_error_and_exit(const char *format, const char *s,
 		const char *arg);
-void		parse_argv(const char *const *argv, const char *optstring,
-		uint64_t *options);
+
+/*
+** Output
+*/
+
+void		print_usage(void);
+void		long_format(const char *arg);
+void		short_format(const char *arg);
 
 #endif
