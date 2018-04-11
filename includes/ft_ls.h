@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 09:50:16 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/11 04:31:16 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 # include <errno.h>
 # include <inttypes.h>
-# include "ft_printf.h"
-
+# include "../libft/libft.h"
 /*
 ** Macros
 */
@@ -57,7 +56,12 @@ typedef enum	e_options
 }				t_ls_opts;
 
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
-# define SORT_MASK (REVERSE | MODIF_SORT)
+
+typedef enum	e_bool
+{
+	FALSE,
+	TRUE
+}				t_bool;
 
 enum	e_acl_type
 {
@@ -108,7 +112,7 @@ void		test(const char *const *argv, t_ls info);
 */
 
 void		ft_perror(const char *arg);
-void		print_error_and_exit(const char *format, const char *s,
+void		print_error_and_exit(const char *s,
 		const char *arg);
 
 /*

@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/04/09 07:06:40 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/04/11 02:01:28 by jolabour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,9 +46,8 @@ LINK		= $(CC) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)
 
 all: $(LIB_DIR)/$(LIB) $(NAME)
 
-debug: CFLAGS += -fsanitize=address -g3
-debug: LFLAGS += -fsanitize=address
-debug: all
+debug: CFLAGS += -g3
+debug: re
 
 $(LIB_DIR)/$(LIB):
 	@make -C $(LIB_DIR)

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 04:37:51 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/11 04:28:13 by jolabour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,14 @@
 #include <stdio.h>
 #include "ft_ls.h"
 
-void	print_error_and_exit(const char *format, const char *error,
+void	print_error_and_exit(const char *error,
 		const char *arg)
 {
-	ft_printf(format, 2, error, *arg);
+	ft_putstr_fd("Error: ", 2);
+	ft_putstr_fd(error, 2);
+	ft_putstr_fd(" -- (", 2);
+	ft_putchar_fd(*arg, 2);
+	ft_putstr_fd(")\n", 2);
 	print_usage();
 	exit(EXIT_FAILURE);
 }
