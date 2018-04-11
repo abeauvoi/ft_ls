@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 07:13:41 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 01:23:03 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ void	test(const char *const *argv, t_ls info)
 		{
 			if (display_entry(dp->d_name, info.options))
 			{
-				tmp = ft_strdup(dp->d_name);
-				info.outf(tmp);
+				tmp = concat_path(*argv, dp->d_name, ft_strlen(*argv),
+						dp->d_namlen);
+				info.outf(tmp, dp->d_name);
 				free((void*)tmp);
 				tmp = NULL;
 			}

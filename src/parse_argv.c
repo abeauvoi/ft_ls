@@ -6,39 +6,51 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 09:49:53 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/11 03:57:54 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
 static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, RECURSIVE,
-	DISPLAY_MASK, LONG_LIST, SORT_MASK, SORT_MASK};
+	DISPLAY_MASK, LONG_LIST, REVERSE, MODIF_SORT};
+
+static inline void	parse_one_arg(const char *arg, uint64_t *flags)
+{
+	uint8_t		optind;
+	char		*tmp;
+
+	while (*arg)
+	{
+		if ((tmp = ft_strchr(FT_LS_OPTIONS, *arg)) != NULL)
+		{
+			optind = tmp - FT_LS_OPTIONS;
+			*flags |= (1U << optind);
+			*flags ^= *flags & (g_masks[optind] - (1U << optind));
+		}
+		else
+			print_error_and_exit(ERR_FMT_A, FT_LS_INVALID_OPT, arg);
+		++arg;
+	}
+}
 
 void				parse_argv(const char *const *argv, uint64_t *flags)
 {
-	char		*tmp;
-	uint8_t		optind;
-	char		*arg;
+	const char	*arg;
 	
 	while (*argv)
 	{
 		arg = (char*)*argv;
 		if (arg[0] == '-')
 		{
-			++arg;
-			while (*arg)
+			if (file_exists(arg))
 			{
-				if ((tmp = ft_strchr(FT_LS_OPTIONS, *arg)) != NULL)
-				{
-					optind = tmp - FT_LS_OPTIONS;
-					*flags |= (1U << optind);
-					*flags ^= *flags & (g_masks[optind] - (1U << optind));
-				}
-				else
-					print_error_and_exit(ERR_FMT_A, FT_LS_INVALID_OPT, arg);
-				++arg;
+				++argv;
+				continue ;
 			}
+			else
+				parse_one_arg(++arg, flags);
+			++arg;
 		}
 		++argv;
 	}

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 07:53:46 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 01:11:04 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 #include <grp.h>
 #include <uuid/uuid.h>
 #include <time.h>
+#include <stdlib.h>
 #include "ft_ls.h"
 
-void	long_format(const char *arg)
+void	long_format(const char *absolute_path, const char *arg)
 {
 	struct stat			buf;
 	struct passwd		*pwd;
@@ -26,7 +27,7 @@ void	long_format(const char *arg)
 	static const char	*rwx[] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
 		"rw-", "rwx"};
 
-	lstat(arg, &buf);
+	info->stat_function[entry->linkok](absolute_path, &buf);
 	pwd = getpwuid(buf.st_uid);
 	grp = getgrgid(buf.st_gid);
 	ft_printf("%c%s%s%s %3u %s  %s %6u %.12s %s\n",
@@ -35,8 +36,8 @@ void	long_format(const char *arg)
 			rwx[(buf.st_mode & S_IRWXG) >> 3],
 			rwx[(buf.st_mode & S_IRWXO)],
 			buf.st_nlink,
-			pwd->pw_name,
-			grp->gr_name,
+			pwd ? pwd->pw_name : "?",
+			grp ? grp->gr_name : "?",
 			buf.st_size,
 			ctime((time_t*)&buf.st_mtimespec.tv_sec) + 4,
 			arg);

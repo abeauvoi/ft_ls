@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 09:50:16 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 01:23:05 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef enum	e_options
 }				t_ls_opts;
 
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
-# define SORT_MASK (REVERSE | MODIF_SORT)
 
 enum	e_acl_type
 {
@@ -73,24 +72,30 @@ struct	s_col_info
 	size_t	*col_arr;
 };
 
-struct	s_fileinfo
+typedef struct	s_fileinfo
 {
 	char	*name;
+	size_t	namlen;
 	char	*linkname;
-	char	*absolute_name;
+	char	*path;
 	enum e_filetype	filetype;
-	char	*scontext;
 	t_bool	stat_ok;
 	t_bool	linkok;
+	int		errno_dup;
 	enum e_acl_type	acl_type;
 	t_bool	has_capability;
 	int	quoted;
-};
+	struct timespec	time;
+	struct s_fileinfo	*next;
+}				t_file;
 
 typedef struct	s_ls
 {
 	uint64_t	options;
-	void		(*outf)(const char *);
+	void		(*outf)(const char *, const char *);
+	t_file		*directories;
+	t_file		*entries;
+	int			(*stat_ft[2])(const char *path, struct stat *buf);
 }				t_ls;
 
 /*
@@ -116,7 +121,15 @@ void		print_error_and_exit(const char *format, const char *s,
 */
 
 void		print_usage(void);
-void		long_format(const char *arg);
-void		short_format(const char *arg);
+void		long_format(const char *absolute_path, const char *arg);
+void		short_format(const char *absolute_path, const char *arg);
+
+/*
+** Utils
+*/
+
+char		*concat_path(const char *path, const char *arg, size_t len_1,
+		size_t len_2);
+t_bool		file_exists(const char *path);
 
 #endif
