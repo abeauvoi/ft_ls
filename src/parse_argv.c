@@ -6,20 +6,28 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/11 03:57:54 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 06:49:32 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "ft_ls.h"
 
-static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, RECURSIVE,
+/*
+** SIZE_SORT cancels TIME_SORT but not the other way around, it is handled
+** separately.
+*/
+
+static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, SIZE_SORT, RECURSIVE,
 	DISPLAY_MASK, LONG_LIST, REVERSE, MODIF_SORT};
 
-static inline void	parse_one_arg(const char *arg, uint64_t *flags)
+static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
 {
-	uint8_t		optind;
-	char		*tmp;
+	size_t	optind;
+	const char	*tmp;
 
+	++arg;
 	while (*arg)
 	{
 		if ((tmp = ft_strchr(FT_LS_OPTIONS, *arg)) != NULL)
@@ -34,62 +42,37 @@ static inline void	parse_one_arg(const char *arg, uint64_t *flags)
 	}
 }
 
-void				parse_argv(const char *const *argv, uint64_t *flags)
+size_t				parse_options(const char *const *argv, t_ls_opts *flags)
 {
-	const char	*arg;
+	size_t		index;
 	
-	while (*argv)
+	index = 1;
+	while (argv[index] && argv[index][0] == '-')
 	{
-		arg = (char*)*argv;
-		if (arg[0] == '-')
-		{
-			if (file_exists(arg))
-			{
-				++argv;
-				continue ;
-			}
-			else
-				parse_one_arg(++arg, flags);
-			++arg;
-		}
-		++argv;
+		parse_one_arg((const char*)*argv, flags);
+		++index;
 	}
+	return (index);
 }
 
-static inline void	swap_str(const char **s1, const char **s2)
+void				insert_args(const char *const *argv, t_ls *info)
 {
-	const char	*s;
+	struct stat	sbuf;
 
-	s = *s1;
-	*s1 = *s2;
-	*s2 = s;
-}
-
-void				sort_argv(const char **argv)
-{
-	uint32_t	nonopt_index;
-	uint32_t	start_index;
-
-	start_index = 0;
-	while (argv[start_index])
+	if (!*argv)
+		info->dirs = lstnew("./", NULL, ft_strlen(*argv), 0);
+	else
 	{
-		if (argv[start_index][0] != '-')
+		while (*argv != NULL)
 		{
-			++start_index;
-			continue ;
-		}
-		else
-		{
-			nonopt_index = start_index;
-			while (argv[nonopt_index] && argv[nonopt_index][0] == '-')
-				++nonopt_index;
-			if (!argv[nonopt_index])
-			{
-				argv[start_index] = NULL;
-				return ;
-			}
-			swap_str(argv + start_index, argv + nonopt_index);
-		}
-		++start_index;
+			lstat(*argv, &sbuf);
+			if (S_ISDIR(sbuf.st_mode))
+				lstinsert(&info->dirs, lstnew(*argv, NULL, ft_strlen(*argv), 0),
+						info->options);
+			else
+				lstinsert(&info->entries, lstnew(*argv, NULL, ft_strlen(*argv),
+							0), info->options);
+			++argv;
+		}	
 	}
 }

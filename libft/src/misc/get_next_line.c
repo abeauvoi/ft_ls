@@ -6,13 +6,14 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/19 17:39:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 00:44:28 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 01:53:16 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
 #include "libft.h"
+#include "get_next_line.h"
 
 /*
 ** This get_next_line returs the length of the line instead of one.

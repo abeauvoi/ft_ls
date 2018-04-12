@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 01:23:03 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 06:54:53 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include "ft_ls.h"
 
-t_bool	display_entry(const char *arg, t_ls_opts options)
+static t_bool	display_entry(const char *arg, t_ls_opts options)
 {
 	if (*arg == '.' && (!(options & (ALL | ALMOST_ALL))
 				|| ((options & ALMOST_ALL)
@@ -24,34 +24,33 @@ t_bool	display_entry(const char *arg, t_ls_opts options)
 	return (TRUE);
 }
 
-void	test(const char *const *argv, t_ls info)
+static inline void	display_entries(t_fileinfo **list, t_ls_opts options,
+		void (*outf)(t_fileinfo *))
+{
+	while (*list)
+	{
+		if (display_entry((*list)->name, options))
+			outf(*list);
+		del_entry(lstpop(list));
+	}
+}
+
+void			test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 {
 	DIR				*dirp;
-	struct dirent	*dp;
-	const char		*tmp;
+	struct dirent	*de;
+	t_fileinfo		*fp;
 
-	while (*argv)
+	display_entries(&entries, info.options, info.outf);
+	while (dirs)
 	{
-		dirp = opendir(*argv);
-		if (dirp == NULL)
+		dirp = opendir(dirs->name);
+		while ((de = readdir(dirp)) != NULL)
 		{
-			ft_perror(*argv);
-			++argv;
-			continue ;
+			fp = lstnew(ft_strdup(de->d_name), dirs->name, de->d_namlen, 1);
+			lstinsert(&entries, fp, info.options);
 		}
-		while ((dp = readdir(dirp)) != NULL)
-		{
-			if (display_entry(dp->d_name, info.options))
-			{
-				tmp = concat_path(*argv, dp->d_name, ft_strlen(*argv),
-						dp->d_namlen);
-				info.outf(tmp, dp->d_name);
-				free((void*)tmp);
-				tmp = NULL;
-			}
-		}
-		if (closedir(dirp) == -1)
-			perror("ft_ls: ");
-		++argv;
+		display_entries(&entries, info.options, info.outf);
+		del_entry(lstpop(&dirs));
 	}
 }

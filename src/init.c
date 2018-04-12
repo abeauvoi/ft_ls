@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 06:59:42 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 01:11:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 07:00:46 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void	init(t_ls *info)
 {
-	info->options = 0;
+	ft_bzero(info, sizeof(*info));
 	info->outf = short_format;
-	info->stat_ft[0] = stat;
-	info->stat_ft[1] = lstat;
 }
 
 void	setup(t_ls *info)
 {
 	if (info->options & LONG_LIST)
 		info->outf = long_format;
+	if (info->options & SIZE_SORT)
+		info->options &= ~MODIF_SORT;
 }

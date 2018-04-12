@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/09 04:37:51 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 02:27:46 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ void	print_error_and_exit(const char *format, const char *error,
 {
 	ft_printf(format, 2, error, *arg);
 	print_usage();
+	exit(EXIT_FAILURE);
+}
+
+void	perror_and_exit(void)
+{
+	perror("ft_ls: Error");
 	exit(EXIT_FAILURE);
 }
 

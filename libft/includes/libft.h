@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/11 18:54:46 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/08 23:13:50 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/12 01:35:31 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "libft_types.h"
 # include "libft_macros.h"
-# include "get_next_line.h"
 
 /*
 ** Math related

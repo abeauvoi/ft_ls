@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/04/11 03:15:53 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/04/12 07:05:58 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ VPATH		= $(SRCS_DIR)
 #
 
 SRCS		= main.c print_err.c parse_argv.c test.c print_usage.c \
-		  long_format.c short_format.c init.c utils.c
+		  long_format.c short_format.c init.c utils.c list.c
 
 #
 # Build
@@ -46,9 +46,8 @@ LINK		= $(CC) $(LFLAGS) -o $@ $(filter-out $(LIB_DIR)/$(LIB), $^)
 
 all: $(LIB_DIR)/$(LIB) $(NAME)
 
-debug: CFLAGS += -fsanitize=address -g3
-debug: LFLAGS += -fsanitize=address
-debug: all
+debug: CFLAGS += -g3
+debug: clean all
 
 $(LIB_DIR)/$(LIB):
 	@make -C $(LIB_DIR)
