@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 06:54:53 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/14 01:02:53 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static inline void	display_entries(t_fileinfo **list, t_ls_opts options,
 	{
 		if (display_entry((*list)->name, options))
 			outf(*list);
-		del_entry(lstpop(list));
+		lstpop(list);
 	}
 }
 
@@ -47,10 +47,11 @@ void			test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 		dirp = opendir(dirs->name);
 		while ((de = readdir(dirp)) != NULL)
 		{
-			fp = lstnew(ft_strdup(de->d_name), dirs->name, de->d_namlen, 1);
+			fp = lstnew();
 			lstinsert(&entries, fp, info.options);
 		}
 		display_entries(&entries, info.options, info.outf);
-		del_entry(lstpop(&dirs));
+		lstpop(&dirs);
+		dirs = dirs->next;
 	}
 }

@@ -6,12 +6,13 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 06:49:32 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/14 02:07:02 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h>
 #include "ft_ls.h"
 
 /*
@@ -49,30 +50,36 @@ size_t				parse_options(const char *const *argv, t_ls_opts *flags)
 	index = 1;
 	while (argv[index] && argv[index][0] == '-')
 	{
-		parse_one_arg((const char*)*argv, flags);
+		parse_one_arg((const char*)argv[index], flags);
 		++index;
 	}
 	return (index);
 }
 
-void				insert_args(const char *const *argv, t_ls *info)
+void				insert_command_line_args(const char *const *argv,
+		t_ls *info)
 {
 	struct stat	sbuf;
+	t_fileinfo	*new;
 
-	if (!*argv)
-		info->dirs = lstnew("./", NULL, ft_strlen(*argv), 0);
-	else
+	while (*argv)
 	{
-		while (*argv != NULL)
+		if (lstat(*argv, &sbuf) == -1)
+			perror("ft_ls: Error");
+		else
 		{
-			lstat(*argv, &sbuf);
+			new = lstnew();
+			if (!(new->name = ft_strdup(*argv)))
+				perror_and_exit();
+			new->namlen = ft_strlen(*argv);
+			new->stat_ok = 1;
+			new->sbuf = sbuf;
+			new->filetype = get_filetype(sbuf.st_mode);
 			if (S_ISDIR(sbuf.st_mode))
-				lstinsert(&info->dirs, lstnew(*argv, NULL, ft_strlen(*argv), 0),
-						info->options);
+				lstinsert(&info->dirs, new, info->options);
 			else
-				lstinsert(&info->entries, lstnew(*argv, NULL, ft_strlen(*argv),
-							0), info->options);
-			++argv;
-		}	
+				lstinsert(&info->entries, new, info->options);
+		}
+		++argv;
 	}
 }
