@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 04:01:11 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/19 00:30:14 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	long_format(t_fileinfo *entry)
 {
 	struct passwd		*pwd;
 	struct group		*grp;
-	static const char	*rwx[8] = {"};---", "--x", "-w-", "-wx", "r--", "r-x",
+	static const char	*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
 		"rw-", "rwx"};
 
 	pwd = getpwuid(entry->sbuf.st_uid);

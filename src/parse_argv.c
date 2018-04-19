@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/14 02:07:02 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/19 06:28:38 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,24 @@ size_t				parse_options(const char *const *argv, t_ls_opts *flags)
 		parse_one_arg((const char*)argv[index], flags);
 		++index;
 	}
-	return (index);
+	return (!index ? 1 : index);
+}
+
+static inline void	if_no_arg(t_ls *info)
+{
+	struct stat		sbuf;
+
+	if (!info->nb_dirs && info->has_no_arg)
+	{
+		++info->nb_dirs;
+		info->dirs = lstnew();
+		info->dirs->stat_ok = stat(".", &sbuf) == 0;
+		info->dirs->name = ".";
+		info->dirs->filetype = DIRECTORY;
+		info->dirs->is_cmd_line_arg = 1;
+		info->dirs->namlen = 1;
+		info->dirs->sbuf = sbuf;
+	}
 }
 
 void				insert_command_line_args(const char *const *argv,
@@ -68,10 +85,12 @@ void				insert_command_line_args(const char *const *argv,
 			perror("ft_ls: Error");
 		else
 		{
+			++info->nb_dirs;
 			new = lstnew();
 			if (!(new->name = ft_strdup(*argv)))
 				perror_and_exit();
 			new->namlen = ft_strlen(*argv);
+			new->is_cmd_line_arg = 1;
 			new->stat_ok = 1;
 			new->sbuf = sbuf;
 			new->filetype = get_filetype(sbuf.st_mode);
@@ -82,4 +101,5 @@ void				insert_command_line_args(const char *const *argv,
 		}
 		++argv;
 	}
+	if_no_arg(info);
 }

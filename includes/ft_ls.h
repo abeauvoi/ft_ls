@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/14 01:02:05 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/19 06:31:35 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <errno.h>
 # include <inttypes.h>
 # include <sys/stat.h>
+# include <dirent.h>
 # include "ft_printf.h"
 
 /*
@@ -95,6 +96,8 @@ typedef struct	s_ls
 	void		(*outf)(t_fileinfo *);
 	t_fileinfo	*dirs;
 	t_fileinfo	*entries;
+	size_t		nb_dirs;
+	t_bool		has_no_arg;
 }				t_ls;
 
 /*
@@ -104,7 +107,7 @@ typedef struct	s_ls
 size_t			parse_options(const char *const *argv, t_ls_opts *flags);
 void			insert_command_line_args(const char *const *argv, t_ls *info);
 void			init(t_ls *info);
-void			setup(t_ls *info);
+void			setup(t_ls *info, const char *const *argv);
 void			test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs);
 
 /*
@@ -140,5 +143,6 @@ void			lstinsert(t_fileinfo **head, t_fileinfo *entry,
 		t_ls_opts options);
 t_fileinfo		*lstnew(void);
 void			lstpop(t_fileinfo **head);
+t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de);
 
 #endif
