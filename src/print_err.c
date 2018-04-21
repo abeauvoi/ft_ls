@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 02:27:46 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 01:11:28 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ inline void	ft_perror(const char *arg)
 	}
 	else
 	{
-		ft_bzero(buf, 256);
 		ft_strcpy(buf, "ft_ls: ");
 		ft_strcpy(buf + 7, arg);
 		perror(buf);

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/19 06:21:14 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 01:39:53 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void				test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 	DIR				*dirp;
 	struct dirent	*de;
 	t_fileinfo		*fp;
-	size_t			tot_blocks;
+	size_t			btotal;
 
 	display_entries(&entries, info.options, info.outf);
 	while (dirs)
@@ -46,18 +46,19 @@ void				test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 		if (info.nb_dirs > 1)
 			ft_printf("%s:\n", dirs->name);
 		if (!(dirp = opendir(dirs->name)))
-			perror("ft_ls:");
+			ft_perror(dirs->name);
 		else
 		{
-			tot_blocks = 0;
+			btotal = 0;
 			while ((de = readdir(dirp)) != NULL)
 			{
 				fp = init_node(dirs, de);
-				tot_blocks += fp->sbuf.st_blocks;
-				lstinsert(&entries, fp, info.options);
+				if (display_entry(fp->name, info.options))
+					btotal += fp->sbuf.st_blocks;
+				lstinsert(&entries, fp, info.options, info.cmpf);
 			}
 			if (info.options & LONG_LIST)
-				ft_printf("total %llu\n", tot_blocks);
+				ft_printf("total %llu\n", btotal);
 			display_entries(&entries, info.options, info.outf);
 			if (dirs->next != NULL)
 				ft_putchar('\n');

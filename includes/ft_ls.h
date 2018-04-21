@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/19 06:31:35 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 01:07:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define FT_LS_INVALID_OPT "Invalid option"
 
 /*
-** Enum and structures
+** Typedefs, Enum and Structs
 */
 
 enum	e_filetype
@@ -90,12 +90,15 @@ typedef struct	s_fileinfo
 	struct s_fileinfo	*next;
 }				t_fileinfo;
 
+typedef t_bool (*t_cmp)(t_fileinfo *, t_fileinfo *, t_ls_opts);
+
 typedef struct	s_ls
 {
 	t_ls_opts	options;
 	void		(*outf)(t_fileinfo *);
 	t_fileinfo	*dirs;
 	t_fileinfo	*entries;
+	t_cmp		cmpf;
 	size_t		nb_dirs;
 	t_bool		has_no_arg;
 }				t_ls;
@@ -134,13 +137,14 @@ void			short_format(t_fileinfo *entry);
 char			*concat_path(const char *path, const char *arg, size_t len_1,
 		size_t len_2);
 t_bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
+t_bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 enum e_filetype	get_filetype(mode_t protection);
 /*
 ** List
 */
 
 void			lstinsert(t_fileinfo **head, t_fileinfo *entry,
-		t_ls_opts options);
+		t_ls_opts options, t_cmp cmp);
 t_fileinfo		*lstnew(void);
 void			lstpop(t_fileinfo **head);
 t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de);

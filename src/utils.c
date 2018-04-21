@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/19 05:45:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 01:32:44 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,20 @@ char		*concat_path(const char *path, const char *arg, size_t len_1,
 	return (join);
 }
 
+t_bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
+{
+	if ((options & MODIF_SORT && arg1->sbuf.st_mtime < arg2->sbuf.st_mtime)
+			|| (options & SIZE_SORT && arg1->sbuf.st_size < arg2->sbuf.st_size))
+			return (1);
+	return (ft_strcmp(arg1->name, arg2->name) > 0);
+}
+
 t_bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
-	t_bool	t;
-
-	t = (ft_strcmp(arg1->name, arg2->name) < 0);
-	if (options & MODIF_SORT)
-		t = ((arg1->sbuf.st_mtime) > (arg2->sbuf.st_mtime));
-	else if (options & SIZE_SORT)
-		t = ((arg1->sbuf.st_size) > (arg2->sbuf.st_size));
-	return (t);
+	if ((options & MODIF_SORT && arg1->sbuf.st_mtime > arg2->sbuf.st_mtime)
+			|| (options & SIZE_SORT && arg1->sbuf.st_size > arg2->sbuf.st_size))
+			return (1);
+	return (ft_strcmp(arg1->name, arg2->name) < 0);
 }
 
 enum e_filetype	get_filetype(mode_t protection)

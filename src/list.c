@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/19 06:20:06 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 01:05:41 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include <sys/types.h>
 #include "ft_ls.h"
 
-void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls_opts options)
+void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls_opts options,
+		t_cmp cmp)
 {
 	t_fileinfo	*cur;
 
