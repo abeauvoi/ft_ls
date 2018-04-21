@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:07:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 08:22:49 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # define FT_LS_OPTIONS "ASRalrt"
 # define ERR_FMT_A "%wError: %s -- (%c)\n"
 # define FT_LS_INVALID_OPT "Invalid option"
+# define MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
+# define MINOR(x) ((int32_t)((x) & 0xffffff))
 
 /*
 ** Typedefs, Enum and Structs
