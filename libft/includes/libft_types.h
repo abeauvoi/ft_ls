@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/03 21:10:20 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/01/15 08:25:42 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 04:43:45 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,9 @@ typedef struct		s_str
 	char	*s;
 	size_t	l;
 }					t_str;
+
+typedef unsigned char	t_u8;
+typedef unsigned short 	t_u16;
+typedef unsigned int	t_u32;
 
 #endif

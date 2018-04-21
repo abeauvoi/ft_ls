@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 04:05:02 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 07:19:56 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 			|| (options & SIZE_SORT
 				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
 			return (diff < 0);
-	return (ft_strcmp(arg1->name, arg2->name) > 0);
+	return (ft_strcmp(arg1->path, arg2->path) > 0);
 }
 
 t_bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
@@ -50,7 +50,7 @@ t_bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 			|| (options & SIZE_SORT
 				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
 			return (diff > 0);
-	return (ft_strcmp(arg1->name, arg2->name) < 0);
+	return (ft_strcmp(arg1->path, arg2->path) < 0);
 }
 
 enum e_filetype	get_filetype(mode_t protection)
