@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:32:44 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/21 04:05:02 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,25 @@ char		*concat_path(const char *path, const char *arg, size_t len_1,
 
 t_bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
-	if ((options & MODIF_SORT && arg1->sbuf.st_mtime < arg2->sbuf.st_mtime)
-			|| (options & SIZE_SORT && arg1->sbuf.st_size < arg2->sbuf.st_size))
-			return (1);
+	long	diff;
+
+	if ((options & MODIF_SORT
+				&& (diff = arg1->sbuf.st_mtime - arg2->sbuf.st_mtime) != 0)
+			|| (options & SIZE_SORT
+				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
+			return (diff < 0);
 	return (ft_strcmp(arg1->name, arg2->name) > 0);
 }
 
 t_bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
-	if ((options & MODIF_SORT && arg1->sbuf.st_mtime > arg2->sbuf.st_mtime)
-			|| (options & SIZE_SORT && arg1->sbuf.st_size > arg2->sbuf.st_size))
-			return (1);
+	long	diff;
+
+	if ((options & MODIF_SORT
+				&& (diff = arg1->sbuf.st_mtime - arg2->sbuf.st_mtime) != 0)
+			|| (options & SIZE_SORT
+				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
+			return (diff > 0);
 	return (ft_strcmp(arg1->name, arg2->name) < 0);
 }
 
