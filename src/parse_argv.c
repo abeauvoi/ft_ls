@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:08:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:46:45 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void				insert_command_line_args(const char *const *argv,
 			new->stat_ok = 1;
 			new->sbuf = sbuf;
 			new->filetype = get_filetype(sbuf.st_mode);
+			new->path = new->name;
 			if (S_ISDIR(sbuf.st_mode))
 				lstinsert(&info->dirs, new, info->options, info->cmpf);
 			else
