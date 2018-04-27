@@ -65,7 +65,7 @@ static t_file		*get_current_file(t_hist *hist, const int fd)
 }
 
 static size_t		clear_history(t_hist *hist, t_file *file, size_t len_line,
-		t_bool reached_eof)
+		bool reached_eof)
 {
 	char			*tmp;
 	t_file			*prev;

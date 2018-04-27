@@ -6,20 +6,20 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:39:53 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:29:24 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "ft_ls.h"
 
-static t_bool		display_entry(const char *arg, t_ls_opts options)
+static bool		display_entry(const char *arg, t_ls_opts options)
 {
 	if (*arg == '.' && (!(options & (ALL | ALMOST_ALL))
 				|| ((options & ALMOST_ALL)
 						&& (arg[1] == 0 || (arg[1] == '.' && arg[2] == 0)))))
-		return (FALSE);
-	return (TRUE);
+		return (false);
+	return (true);
 }
 
 static inline void	display_entries(t_fileinfo **list, t_ls_opts options,

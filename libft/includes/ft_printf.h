@@ -245,6 +245,6 @@ char						*ft_strstrn(const char *big, const char *little,
 char						get_sign(intmax_t nb, t_ftpf_flag flags);
 void						print_null(t_ftpf_info *spec, t_ftpf_buf *buffer);
 void						flush_buffer(t_ftpf_buf *buffer, size_t len);
-t_bool						ft_iswprint(t_wchar wc);
+bool						ft_iswprint(t_wchar wc);
 
 #endif

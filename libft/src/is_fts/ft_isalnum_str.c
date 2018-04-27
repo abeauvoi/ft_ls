@@ -12,14 +12,14 @@
 
 #include <libft.h>
 
-t_bool		ft_isalnum_str(const char *s)
+bool		ft_isalnum_str(const char *s)
 {
 	while (ft_isalnum(*s))
 		++s;
 	return (*s == '\0');
 }
 
-t_bool		ft_isalnum_nstr(const char *s, size_t n)
+bool		ft_isalnum_nstr(const char *s, size_t n)
 {
 	while (n-- && ft_isalnum(*s))
 		++s;

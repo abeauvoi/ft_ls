@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-t_bool		ft_iswprint(t_wchar wc)
+bool		ft_iswprint(t_wchar wc)
 {
 	return ((wc > 0x1f && wc < 0x80) || wc > 0x9f);
 }

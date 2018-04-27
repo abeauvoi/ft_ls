@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 05:46:21 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:13:44 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,38 @@
 #include <uuid/uuid.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/xattr.h>
+#include <sys/acl.h>
 #include "ft_ls.h"
+
+static char		print_exec_rights(mode_t mode, char *rights, uint8_t s,
+		char letter)
+{
+	if ((s == 0 && mode & S_ISUID)
+			|| (s == 1 && mode & S_ISGID)
+			|| (s == 2 && mode & S_ISVTX))
+		return (rights[2] == 'x' ? letter : letter - 32);
+	return (rights[2]);
+}
+
+static char		print_xattr(const char *path)
+{
+	acl_t		acl;
+	acl_entry_t	tmp;
+
+	acl = acl_get_link_np(path, ACL_TYPE_EXTENDED);
+	if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &tmp) == -1)
+	{
+		acl_free(acl);
+		acl = NULL;
+	}
+	if (listxattr(path, NULL, 0, XATTR_NOFOLLOW))
+		return ('@');
+	else if (acl)
+		return ('+');
+	else
+		return (' ');
+}
 
 void	long_format(t_fileinfo *entry)
 {
@@ -24,16 +55,23 @@ void	long_format(t_fileinfo *entry)
 	char				lnbuf[PATH_MAX + 1];
 	ssize_t				len;
 	struct group		*grp;
-	static const char	*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
+	static char			*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
 		"rw-", "rwx"};
 
 	pwd = getpwuid(entry->sbuf.st_uid);
 	grp = getgrgid(entry->sbuf.st_gid);
-	ft_printf("%c%s%s%s %u %s  %s ",
+	ft_printf("%c%.2s%c%.2s%c%.2s%c%c %u %s %s ",
 			FILETYPE[entry->filetype],
 			rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6],
+			print_exec_rights(entry->sbuf.st_mode,
+				rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6], 0, 's'),
 			rwx[(entry->sbuf.st_mode & S_IRWXG) >> 3],
-			rwx[(entry->sbuf.st_mode & S_IRWXO)],
+			print_exec_rights(entry->sbuf.st_mode,
+				rwx[(entry->sbuf.st_mode & S_IRWXG) >> 3], 1, 's'),
+			rwx[entry->sbuf.st_mode & S_IRWXO],
+			print_exec_rights(entry->sbuf.st_mode,
+				rwx[entry->sbuf.st_mode & S_IRWXO], 2, 't'),
+			print_xattr(entry->path),
 			entry->sbuf.st_nlink,
 			pwd->pw_name,
 			grp->gr_name);

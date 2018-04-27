@@ -72,27 +72,27 @@ enum	e_acl_type
 
 struct	s_col_info
 {
-	t_bool	valid_len;
+	bool	valid_len;
 	size_t	line_len;
 	size_t	*col_arr;
 };
 
 typedef struct	s_fileinfo
 {
-	t_bool	is_cmd_line_arg;
+	bool	is_cmd_line_arg;
 	const char	*name;
 	size_t	namlen;
 	const char	*linkname;
 	const char	*path;
 	enum e_filetype	filetype;
-	t_bool	stat_ok;
-	t_bool	linkok;
+	bool	stat_ok;
+	bool	linkok;
 	int		errno_dup;
 	struct stat	sbuf;
 	struct s_fileinfo	*next;
 }				t_fileinfo;
 
-typedef t_bool (*t_cmp)(t_fileinfo *, t_fileinfo *, t_ls_opts);
+typedef bool (*t_cmp)(t_fileinfo *, t_fileinfo *, t_ls_opts);
 
 typedef struct	s_ls
 {
@@ -102,7 +102,7 @@ typedef struct	s_ls
 	t_fileinfo	*entries;
 	t_cmp		cmpf;
 	size_t		nb_dirs;
-	t_bool		has_no_arg;
+	bool		has_no_arg;
 }				t_ls;
 
 /*
@@ -138,8 +138,8 @@ void			short_format(t_fileinfo *entry);
 
 char			*concat_path(const char *path, const char *arg, size_t len_1,
 		size_t len_2);
-t_bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
-t_bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
+bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
+bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 enum e_filetype	get_filetype(mode_t protection);
 /*
 ** List

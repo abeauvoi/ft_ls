@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/11 18:54:46 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 01:35:31 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:22:31 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ uintmax_t			ft_abs(intmax_t i);
 long				ft_round(double db);
 intmax_t			ft_min(intmax_t a, intmax_t b);
 intmax_t			ft_max(intmax_t a, intmax_t b);
-t_bool				ft_ispow2(unsigned long x);
+bool				ft_ispow2(unsigned long x);
 
 /*
 ** Misc.
@@ -49,11 +49,11 @@ int					ft_isupper(int c);
 char				*ft_itoa_base(int64_t n, unsigned int base);
 int					ft_isxdigit(int c);
 void				ft_swap_int(int *a, int *b);
-t_bool				ft_isblank(char c);
-t_bool				ft_isalnum_str(const char *s);
-t_bool				ft_isalnum_nstr(const char *s, size_t n);
-t_bool				ft_isdigit_str(const char *s);
-t_bool				ft_isdigit_nstr(const char *s, size_t n);
+bool				ft_isblank(char c);
+bool				ft_isalnum_str(const char *s);
+bool				ft_isalnum_nstr(const char *s, size_t n);
+bool				ft_isdigit_str(const char *s);
+bool				ft_isdigit_nstr(const char *s, size_t n);
 
 /*
 ** Linked lists

@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-static void		add_prefix(t_ftpf_buf *buffer, const char *digits, t_bool alt)
+static void		add_prefix(t_ftpf_buf *buffer, const char *digits, bool alt)
 {
 	if (alt)
 	{
@@ -25,7 +25,7 @@ t_step			hex_spec(const char **format, va_list *ap, t_ftpf_info *spec,
 		t_ftpf_buf *buffer)
 {
 	char		str[17];
-	t_bool		alt;
+	bool		alt;
 	int			ndigits;
 	uintmax_t	nb;
 	char		*digits;

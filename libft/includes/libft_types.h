@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/03 21:10:20 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 04:43:45 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:29:02 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,7 @@
 # include <string.h>
 # include <stdint.h>
 # include <limits.h>
-
-typedef enum		e_bool
-{
-	FALSE,
-	TRUE
-}					t_bool;
+# include <stdbool.h>
 
 typedef struct		s_list
 {

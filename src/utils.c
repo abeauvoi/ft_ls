@@ -29,7 +29,7 @@ char		*concat_path(const char *path, const char *arg, size_t len_1,
 	return (join);
 }
 
-t_bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
+bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
 	long	diff;
 
@@ -41,7 +41,7 @@ t_bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 	return (ft_strcmp(arg1->path, arg2->path) > 0);
 }
 
-t_bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
+bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
 	long	diff;
 

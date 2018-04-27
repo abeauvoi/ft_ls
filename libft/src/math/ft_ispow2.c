@@ -12,7 +12,7 @@
 
 #include <libft_types.h>
 
-t_bool	ft_ispow2(unsigned long x)
+bool	ft_ispow2(unsigned long x)
 {
 	return ((x & (x - 1)) == 0);
 }
