@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/27 06:46:45 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/27 06:54:39 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void				insert_command_line_args(const char *const *argv,
 	while (*argv)
 	{
 		if (lstat(*argv, &sbuf) == -1)
-			perror("ft_ls: Error");
+			ft_perror(*argv);
 		else
 		{
 			++info->nb_dirs;
