@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 08:22:49 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 07:37:28 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,13 @@
 # define MIN_COLUMN_WIDTH 3
 # define FILETYPE "?pcdb-lswd"
 # define FT_LS_OPTIONS "ASRalrt"
+# define MAX_ERR_SIZE 47
 # define ERR_FMT_A "%wError: %s -- (%c)\n"
 # define FT_LS_INVALID_OPT "Invalid option"
 # define MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
 # define MINOR(x) ((int32_t)((x) & 0xffffff))
+# define STRINGIFY(x) #x
+# define LENGTH(x) (sizeof(STRINGIFY(x)) - 1)
 
 /*
 ** Typedefs, Enum and Structs
@@ -79,14 +82,13 @@ struct	s_col_info
 
 typedef struct	s_fileinfo
 {
-	bool	is_cmd_line_arg;
 	const char	*name;
 	size_t	namlen;
+	size_t	pathlen;
 	const char	*linkname;
 	const char	*path;
 	enum e_filetype	filetype;
 	bool	stat_ok;
-	bool	linkok;
 	int		errno_dup;
 	struct stat	sbuf;
 	struct s_fileinfo	*next;
@@ -102,7 +104,6 @@ typedef struct	s_ls
 	t_fileinfo	*entries;
 	t_cmp		cmpf;
 	size_t		nb_dirs;
-	bool		has_no_arg;
 }				t_ls;
 
 /*
@@ -112,7 +113,7 @@ typedef struct	s_ls
 size_t			parse_options(const char *const *argv, t_ls_opts *flags);
 void			insert_command_line_args(const char *const *argv, t_ls *info);
 void			init(t_ls *info);
-void			setup(t_ls *info, const char *const *argv);
+const char		**setup(t_ls *info, const char **argv);
 void			test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs);
 
 /*
@@ -141,14 +142,17 @@ char			*concat_path(const char *path, const char *arg, size_t len_1,
 bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 enum e_filetype	get_filetype(mode_t protection);
+void			bubble_sort_argv(const char **argv);
+
 /*
 ** List
 */
 
-void			lstinsert(t_fileinfo **head, t_fileinfo *entry,
-		t_ls_opts options, t_cmp cmp);
+void			lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls info);
 t_fileinfo		*lstnew(void);
-void			lstpop(t_fileinfo **head);
+t_fileinfo		*lstpop(t_fileinfo **head);
 t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de);
+void			lstpush(t_fileinfo **head, t_fileinfo *entry);
+void			lstdel_head(t_fileinfo **head);
 
 #endif

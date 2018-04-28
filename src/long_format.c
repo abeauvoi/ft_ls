@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/27 06:45:18 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 07:44:01 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <sys/xattr.h>
 #include <sys/acl.h>
+#include <stdlib.h>
 #include "ft_ls.h"
 
 static char		print_exec_rights(mode_t mode, char *rights, uint8_t s,
@@ -30,23 +31,20 @@ static char		print_exec_rights(mode_t mode, char *rights, uint8_t s,
 	return (rights[2]);
 }
 
-static char		print_xattr(const char *path)
+static char		print_xattr(const char *path, mode_t mode)
 {
 	acl_t		acl;
-	acl_entry_t	tmp;
 
 	acl = acl_get_link_np(path, ACL_TYPE_EXTENDED);
-	if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &tmp) == -1)
+	acl_free(acl);
+	if (mode & (S_IFREG | S_IFDIR))
 	{
-		acl_free(acl);
-		acl = NULL;
+		if (listxattr(path, NULL, 0, XATTR_NOFOLLOW))
+			return ('@');
+		else if (acl)
+			return ('+');
 	}
-	if (listxattr(path, NULL, 0, XATTR_NOFOLLOW))
-		return ('@');
-	else if (acl)
-		return ('+');
-	else
-		return (' ');
+	return (' ');
 }
 
 void	long_format(t_fileinfo *entry)
@@ -60,7 +58,7 @@ void	long_format(t_fileinfo *entry)
 
 	pwd = getpwuid(entry->sbuf.st_uid);
 	grp = getgrgid(entry->sbuf.st_gid);
-	ft_printf("%c%.2s%c%.2s%c%.2s%c%c %u %s %s ",
+	ft_printf("%c%.2s%c%.2s%c%.2s%c%c %u ",
 			FILETYPE[entry->filetype],
 			rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6],
 			print_exec_rights(entry->sbuf.st_mode,
@@ -71,10 +69,16 @@ void	long_format(t_fileinfo *entry)
 			rwx[entry->sbuf.st_mode & S_IRWXO],
 			print_exec_rights(entry->sbuf.st_mode,
 				rwx[entry->sbuf.st_mode & S_IRWXO], 2, 't'),
-			print_xattr(entry->path),
-			entry->sbuf.st_nlink,
-			pwd->pw_name,
-			grp->gr_name);
+			print_xattr(entry->path, entry->sbuf.st_mode),
+			entry->sbuf.st_nlink);
+	if (pwd)
+		ft_printf("%s ", pwd->pw_name);
+	else
+		ft_printf("%u ", entry->sbuf.st_uid);
+	if (grp)
+		ft_printf("%s ", grp->gr_name);
+	else
+		ft_printf("%u ", entry->sbuf.st_gid);
 	if (entry->filetype == CHARDEV || entry->filetype == BLOCKDEV)
 		ft_printf("%u, %u ", MAJOR(entry->sbuf.st_rdev),
 				MINOR(entry->sbuf.st_rdev));

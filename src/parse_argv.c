@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/27 06:54:39 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 03:57:15 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include "ft_ls.h"
-
 /*
 ** SIZE_SORT cancels TIME_SORT but not the other way around, it is handled
 ** separately.
@@ -25,7 +24,7 @@ static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, SIZE_SORT, RECURSIVE,
 
 static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
 {
-	size_t	optind;
+	size_t		optind;
 	const char	*tmp;
 
 	++arg;
@@ -46,31 +45,14 @@ static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
 size_t				parse_options(const char *const *argv, t_ls_opts *flags)
 {
 	size_t		index;
-	
+
 	index = 1;
 	while (argv[index] && argv[index][0] == '-')
 	{
 		parse_one_arg((const char*)argv[index], flags);
 		++index;
 	}
-	return (!index ? 1 : index);
-}
-
-static inline void	if_no_arg(t_ls *info)
-{
-	struct stat		sbuf;
-
-	if (!info->nb_dirs && info->has_no_arg)
-	{
-		++info->nb_dirs;
-		info->dirs = lstnew();
-		info->dirs->stat_ok = stat(".", &sbuf) == 0;
-		info->dirs->name = ".";
-		info->dirs->filetype = DIRECTORY;
-		info->dirs->is_cmd_line_arg = 1;
-		info->dirs->namlen = 1;
-		info->dirs->sbuf = sbuf;
-	}
+	return (index);
 }
 
 void				insert_command_line_args(const char *const *argv,
@@ -81,26 +63,24 @@ void				insert_command_line_args(const char *const *argv,
 
 	while (*argv)
 	{
-		if (lstat(*argv, &sbuf) == -1)
-			ft_perror(*argv);
-		else
+		if (lstat(*argv++, &sbuf) == -1)
 		{
-			++info->nb_dirs;
-			new = lstnew();
-			if (!(new->name = ft_strdup(*argv)))
-				perror_and_exit();
-			new->namlen = ft_strlen(*argv);
-			new->is_cmd_line_arg = 1;
-			new->stat_ok = 1;
-			new->sbuf = sbuf;
-			new->filetype = get_filetype(sbuf.st_mode);
-			new->path = new->name;
-			if (S_ISDIR(sbuf.st_mode))
-				lstinsert(&info->dirs, new, info->options, info->cmpf);
-			else
-				lstinsert(&info->entries, new, info->options, info->cmpf);
+			ft_perror(argv[-1]);
+			continue ;
 		}
-		++argv;
+		++info->nb_dirs;
+		new = lstnew();
+		if (!(new->name = ft_strdup(argv[-1]))
+				|| !(new->path = ft_strdup(new->name)))
+			perror_and_exit();
+		new->namlen = ft_strlen(argv[-1]);
+		new->pathlen = new->namlen;
+		new->stat_ok = 1;
+		new->sbuf = sbuf;
+		new->filetype = get_filetype(sbuf.st_mode);
+		if (S_ISDIR(sbuf.st_mode))
+			lstpush(&info->dirs, new);
+		else
+			lstpush(&info->entries, new);
 	}
-	if_no_arg(info);
 }

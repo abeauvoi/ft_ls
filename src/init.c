@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 06:59:42 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:08:00 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 00:22:23 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init(t_ls *info)
 	info->cmpf = cmp;
 }
 
-void	setup(t_ls *info, const char *const *argv)
+const char	**setup(t_ls *info, const char **argv)
 {
 	if (info->options & LONG_LIST)
 		info->outf = long_format;
@@ -27,5 +27,7 @@ void	setup(t_ls *info, const char *const *argv)
 		info->options &= ~MODIF_SORT;
 	if (info->options & REVERSE)
 		info->cmpf = rev_cmp;
-	info->has_no_arg = *argv == NULL;
+	if (*argv == NULL)
+		*(--argv) = ".";
+	return (argv);
 }

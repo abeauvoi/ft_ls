@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 01:05:41 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 05:13:11 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #include <sys/types.h>
 #include "ft_ls.h"
 
-void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls_opts options,
-		t_cmp cmp)
+void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls info)
 {
 	t_fileinfo	*cur;
 
@@ -23,17 +22,32 @@ void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls_opts options,
 		*head = entry;
 	else
 	{
-		if (cmp(entry, *head, options))
+		if (info.cmpf(entry, *head, info.options))
 		{
 			entry->next = *head;
 			*head = entry;
 			return ;
 		}
 		cur = *head;
-		while (cur->next && !(cmp(entry, cur->next, options)))
+		while (cur->next && !(info.cmpf(entry, cur->next, info.options)))
 			cur = cur->next;
 		entry->next = cur->next;
 		cur->next = entry;
+	}
+}
+
+void		lstpush(t_fileinfo **head, t_fileinfo *entry)
+{
+	t_fileinfo	*tmp;
+	
+	if (*head == NULL)
+		*head = entry;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = entry;
 	}
 }
 		
@@ -47,17 +61,14 @@ t_fileinfo	*lstnew(void)
 	return (new);
 }
 
-void	lstpop(t_fileinfo **head)
+t_fileinfo	*lstpop(t_fileinfo **head)
 {
 	t_fileinfo	*tmp;
 
-	tmp = (*head)->next;
-	if (!(*head)->is_cmd_line_arg)
-		free((void*)(*head)->name);
-	free((void*)(*head)->linkname);
-	free((void*)(*head)->path);
-	free(*head);
-	(*head) = tmp;
+	tmp = (*head);
+	(*head) = (*head)->next;
+	tmp->next = NULL;
+	return (tmp);
 }
 
 t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
@@ -68,14 +79,13 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
 	fp = lstnew();
 	fp->name = ft_strdup(de->d_name);
 	fp->namlen = de->d_namlen;
-	if (!(fp->path = concat_path(cur_dir->name, fp->name, cur_dir->namlen,
+	if (!(fp->path = concat_path(cur_dir->path, fp->name, cur_dir->pathlen,
 					fp->namlen)))
 		perror_and_exit();
-	lstat(fp->path, &sbuf);
+	fp->pathlen = cur_dir->pathlen + fp->namlen
+		+ (cur_dir->path[cur_dir->pathlen - 1] == '/' ? 0 : 1);
+	fp->stat_ok = lstat(fp->path, &sbuf) == 0;
 	fp->filetype = get_filetype(sbuf.st_mode);
-	fp->stat_ok = 1;
-	if (fp->filetype == SYMBOLIC_LINK)
-		fp->linkok = 1;
 	fp->errno_dup = errno;
 	fp->sbuf = sbuf;
 	return (fp);

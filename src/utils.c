@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/21 07:19:56 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/04/28 00:52:48 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,31 @@ enum e_filetype	get_filetype(mode_t protection)
 	else if (S_ISSOCK(protection))
 		return (SOCK);
 	return (UNKNOWN);
+}
+
+void			bubble_sort_argv(const char **argv)
+{
+	bool		sorted;
+	const char	**save_argv;
+	const char	*tmp;
+
+	sorted = false;
+	save_argv = argv;
+	while (!sorted)
+	{
+		argv = save_argv + 1;
+		sorted = true;
+		while (*argv)
+		{
+			if (ft_strcmp(*argv, *save_argv) < 0)
+			{
+				tmp = *argv;
+				*argv = *save_argv;
+				*save_argv = tmp;
+				sorted = false;
+			}
+			++argv;
+		}
+		++save_argv;
+	}
 }
