@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 03:57:15 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 00:22:20 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@ void				insert_command_line_args(const char *const *argv,
 
 	while (*argv)
 	{
+		++info->nb_dirs;
 		if (lstat(*argv++, &sbuf) == -1)
 		{
 			ft_perror(argv[-1]);
 			continue ;
 		}
-		++info->nb_dirs;
 		new = lstnew();
 		if (!(new->name = ft_strdup(argv[-1]))
 				|| !(new->path = ft_strdup(new->name)))

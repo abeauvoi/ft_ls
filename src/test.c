@@ -6,14 +6,14 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 07:06:39 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 00:55:17 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "ft_ls.h"
 
-static bool			display_entry(const char *arg, t_ls_opts options)
+static inline bool	display_entry(const char *arg, t_ls_opts options)
 {
 	if (*arg == '.'
 			&& (!(options & (ALL | ALMOST_ALL)) || ((options & ALMOST_ALL)
@@ -23,17 +23,16 @@ static bool			display_entry(const char *arg, t_ls_opts options)
 }
 
 static inline void	display_entries(t_fileinfo **entries, t_fileinfo **tmp,
-		void (*outf)(t_fileinfo *), t_ls_opts options)
+		t_ls info)
 {
 	while (*entries)
 	{
-		outf(*entries);
-		if (tmp && options & RECURSIVE && (*entries)->filetype == DIRECTORY)
-		{
+		info.outf(*entries);
+		if (tmp && (info.options & RECURSIVE)
+				&& (*entries)->filetype == DIRECTORY)
 			lstpush(tmp, lstpop(entries));
-		}
 		else
-			lstdel_head(entries);
+			lstdel_head(entries, &info.entries);
 	}
 }
 
@@ -59,17 +58,18 @@ void				test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 	t_fileinfo		*tmp;
 	size_t			btotal;
 
-	display_entries(&entries, NULL, info.outf, info.options);
+	display_entries(&entries, NULL, info);
 	while (dirs)
 	{
-		ft_printf("%s:\n", dirs->path);
 		if (!(dirp = opendir(dirs->path)))
 		{
 			ft_perror(dirs->name);
-			lstdel_head(&dirs);
+			lstdel_head(&dirs, &info.dirs);
 		}
 		else
 		{
+			if (info.nb_dirs > 1)
+				ft_printf("%s:\n", dirs->path);
 			btotal = 0;
 			tmp = NULL;
 			while ((de = readdir(dirp)) != NULL)
@@ -78,13 +78,15 @@ void				test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
 				{
 					fp = init_node(dirs, de);
 					lstinsert(&entries, fp, info);
+					if (fp->filetype == DIRECTORY)
+						++info.nb_dirs;
 					btotal += fp->sbuf.st_blocks;
 				}
 			}
-			lstdel_head(&dirs);
+			lstdel_head(&dirs, &info.dirs);
 			if (info.options & LONG_LIST && entries)
 				ft_printf("total %llu\n", btotal);
-			display_entries(&entries, &tmp, info.outf, info.options);
+			display_entries(&entries, &tmp, info);
 			add_subdirs_to_dirs(&dirs, &tmp);
 			if (dirs)
 				ft_putchar('\n');

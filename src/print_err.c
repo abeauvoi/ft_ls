@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 07:05:06 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 00:25:08 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ inline void	ft_perror(const char *arg)
 	strcpy(buf + 7, arg);
 	strcat(buf, ": ");
 	strcat(buf, strerror(errno));
-	strcat(buf, "\n");
 	errno = 0;
 	ft_putendl_fd(buf, 2);
 }

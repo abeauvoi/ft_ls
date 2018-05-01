@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 07:37:28 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 05:37:43 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@
 # define FT_LS_INVALID_OPT "Invalid option"
 # define MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
 # define MINOR(x) ((int32_t)((x) & 0xffffff))
-# define STRINGIFY(x) #x
-# define LENGTH(x) (sizeof(STRINGIFY(x)) - 1)
 
 /*
 ** Typedefs, Enum and Structs
@@ -66,13 +64,6 @@ typedef enum	e_options
 
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
 
-enum	e_acl_type
-{
-	ACL_T_NONE,
-	ACL_T_LSM_CONTEXT_ONLY,
-	ACL_T_YES
-};
-
 struct	s_col_info
 {
 	bool	valid_len;
@@ -82,14 +73,12 @@ struct	s_col_info
 
 typedef struct	s_fileinfo
 {
-	const char	*name;
+	char	*name;
 	size_t	namlen;
 	size_t	pathlen;
-	const char	*linkname;
-	const char	*path;
+	char	*path;
 	enum e_filetype	filetype;
 	bool	stat_ok;
-	int		errno_dup;
 	struct stat	sbuf;
 	struct s_fileinfo	*next;
 }				t_fileinfo;
@@ -104,6 +93,7 @@ typedef struct	s_ls
 	t_fileinfo	*entries;
 	t_cmp		cmpf;
 	size_t		nb_dirs;
+	t_u8		max_col_size[7];
 }				t_ls;
 
 /*
@@ -153,6 +143,6 @@ t_fileinfo		*lstnew(void);
 t_fileinfo		*lstpop(t_fileinfo **head);
 t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de);
 void			lstpush(t_fileinfo **head, t_fileinfo *entry);
-void			lstdel_head(t_fileinfo **head);
+void			lstdel_head(t_fileinfo **head, t_fileinfo **dup);
 
 #endif

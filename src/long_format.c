@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 07:44:01 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 03:10:24 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char		print_xattr(const char *path, mode_t mode)
 void	long_format(t_fileinfo *entry)
 {
 	struct passwd		*pwd;
-	char				lnbuf[PATH_MAX + 1];
+	char				lnbuf[256];
 	ssize_t				len;
 	struct group		*grp;
 	static char			*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
@@ -88,7 +88,12 @@ void	long_format(t_fileinfo *entry)
 	if (entry->filetype == SYMBOLIC_LINK)
 	{
 		len = readlink(entry->path, lnbuf, sizeof(lnbuf));
-		lnbuf[len] = 0;
+		if (len < 0)
+			return ;
+		if (len > 255)
+			strncpy(&lnbuf[252], "...", 4);
+		else
+			lnbuf[len] = 0;
 		ft_printf("%s -> %s\n", entry->name, lnbuf);
 	}
 	else

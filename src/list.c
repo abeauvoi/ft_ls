@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 05:13:11 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/01 05:36:28 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
 		+ (cur_dir->path[cur_dir->pathlen - 1] == '/' ? 0 : 1);
 	fp->stat_ok = lstat(fp->path, &sbuf) == 0;
 	fp->filetype = get_filetype(sbuf.st_mode);
-	fp->errno_dup = errno;
 	fp->sbuf = sbuf;
 	return (fp);
 }
