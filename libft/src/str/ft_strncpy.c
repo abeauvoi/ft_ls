@@ -6,20 +6,20 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/14 17:52:48 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/04/19 23:12:00 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 06:43:15 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft_types.h"
 
 char		*ft_strncpy(char *dst, const char *src, size_t len)
 {
-	size_t	i;
+	char	*d;
 
-	i = 0;
-	while (i < len && *src)
-		dst[i++] = *src++;
-	while (i < len)
-		dst[i++] = 0;
+	d = dst;
+	while (len-- && *src)
+		*d++ = *src++;
+	while (len--)
+		*d++ = 0;
 	return (dst);
 }

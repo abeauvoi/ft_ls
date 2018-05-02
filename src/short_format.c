@@ -6,13 +6,14 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 06:58:04 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/12 03:58:39 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 04:24:00 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	short_format(t_fileinfo *entry)
+void	short_format(t_fileinfo *entry, t_ls info)
 {
+	(void)info;
 	ft_putendl(entry->name);
 }

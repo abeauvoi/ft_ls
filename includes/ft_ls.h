@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/01 05:37:43 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 12:21:17 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,21 @@
 # include <inttypes.h>
 # include <sys/stat.h>
 # include <dirent.h>
-# include "ft_printf.h"
+# include <pwd.h>
+# include <grp.h>
+# include "libft.h"
 
 /*
 ** Macros
 */
 
-# define MIN_COLUMN_WIDTH 3
-# define FILETYPE "?pcdb-lswd"
-# define FT_LS_OPTIONS "ASRalrt"
+# define FT_LS_BUFSIZ 4096
+# define FILETYPE_LETTER "?pcdb-lswd"
+# define FT_LS_OPTIONS "ASRailrst"
 # define MAX_ERR_SIZE 47
 # define ERR_FMT_A "%wError: %s -- (%c)\n"
 # define FT_LS_INVALID_OPT "Invalid option"
-# define MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
+# define MAJOR(x) ((int32_t)(((t_u32)(x) >> 24) & 0xff))
 # define MINOR(x) ((int32_t)((x) & 0xffffff))
 
 /*
@@ -52,15 +54,30 @@ enum	e_filetype
 
 typedef enum	e_options
 {
-	ALMOST_ALL = 1U,
-	SIZE_SORT = 1U << 1,
-	RECURSIVE = 1U << 2,
-	ALL = 1U << 3,
-	LONG_LIST = 1U << 4,
-	REVERSE = 1U << 5,
-	MODIF_SORT = 1U << 6,
+	ALMOST_ALL = 1,
+	SIZE_SORT = 2,
+	RECURSIVE = 4,
+	ALL = 8,
+	PRINT_INODE = 16,
+	LONG_LIST = 32,
+	REVERSE = 64,
+	PRINT_BLOCKS = 128,
+	MODIF_SORT = 256,
 	OPTIONS
 }				t_ls_opts;
+
+enum			e_col_id
+{
+	INODE_COL,
+	BLOCKS_COL,
+	NLINKS_COL,
+	OWNER_COL,
+	GROUP_COL,
+	MAJOR_DEV_COL,
+	MINOR_DEV_COL,
+	FILE_SIZE_COL,
+	LFMT_COLS
+};
 
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
 
@@ -73,13 +90,15 @@ struct	s_col_info
 
 typedef struct	s_fileinfo
 {
-	char	*name;
-	size_t	namlen;
-	size_t	pathlen;
-	char	*path;
-	enum e_filetype	filetype;
-	bool	stat_ok;
-	struct stat	sbuf;
+	char				*name;
+	size_t				namlen;
+	size_t				pathlen;
+	char				*path;
+	enum e_filetype		filetype;
+	bool				stat_ok;
+	struct stat			sbuf;
+	struct passwd		*pwd;
+	struct group		*grp;
 	struct s_fileinfo	*next;
 }				t_fileinfo;
 
@@ -87,13 +106,24 @@ typedef bool (*t_cmp)(t_fileinfo *, t_fileinfo *, t_ls_opts);
 
 typedef struct	s_ls
 {
-	t_ls_opts	options;
-	void		(*outf)(t_fileinfo *);
-	t_fileinfo	*dirs;
-	t_fileinfo	*entries;
-	t_cmp		cmpf;
-	size_t		nb_dirs;
-	t_u8		max_col_size[7];
+	t_ls_opts		options;
+	void			(*outf)(t_fileinfo *, struct s_ls);
+	t_fileinfo		*dirs;
+	t_fileinfo		*entries;
+	t_cmp			cmpf;
+	size_t			nb_args;
+	char			buf[FT_LS_BUFSIZ + 1];
+	char			*a;
+	char			*z;
+	uint8_t			long_format_col_widths[LFMT_COLS];
+	ino_t			max_inode;
+	blkcnt_t		max_block_size;
+	nlink_t			max_nlink;
+	uid_t			max_uid;
+	gid_t			max_gid;
+	dev_t			max_major;
+	dev_t			max_minor;
+	off_t			max_file_size;
 }				t_ls;
 
 /*
@@ -104,7 +134,13 @@ size_t			parse_options(const char *const *argv, t_ls_opts *flags);
 void			insert_command_line_args(const char *const *argv, t_ls *info);
 void			init(t_ls *info);
 const char		**setup(t_ls *info, const char **argv);
-void			test(t_ls info, t_fileinfo *entries, t_fileinfo *dirs);
+void			core(t_ls info, t_fileinfo *entries, t_fileinfo *dirs);
+bool			display_entry(const char *arg, t_ls_opts options);
+void			display_entries(t_fileinfo **entries, t_fileinfo **tmp,
+		t_ls *info);
+void			add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo **tmp);
+void			read_current_dir(t_ls *info, t_fileinfo **entries,
+		t_fileinfo **dirs, DIR *dirp);
 
 /*
 ** Error management
@@ -120,8 +156,19 @@ void			perror_and_exit(void);
 */
 
 void			print_usage(void);
-void			long_format(t_fileinfo *entry);
-void			short_format(t_fileinfo *entry);
+void			short_format(t_fileinfo *entry, t_ls info);
+
+/*
+** long format
+*/
+
+void			long_format(t_fileinfo *entry, t_ls info);
+void			print_user(uid_t uid);
+void			print_group(gid_t gid);
+void			print_inode(t_fileinfo *entry);
+void			print_filename(t_fileinfo *entry);
+void			print_size(t_fileinfo *entry);
+void			print_blocks(t_fileinfo *entry);
 
 /*
 ** Utils
@@ -133,6 +180,10 @@ bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 enum e_filetype	get_filetype(mode_t protection);
 void			bubble_sort_argv(const char **argv);
+void			bufferize_str(t_ls *info, const char *str, int len);
+void			bufferize_char(t_ls *info, char c);
+char			*ft_ultoa(char *ptr, unsigned long val);
+char			*pad_buffer(char *ptr, size_t len);
 
 /*
 ** List

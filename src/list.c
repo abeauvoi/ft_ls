@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/01 05:36:28 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 11:43:51 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,5 +87,7 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
 	fp->stat_ok = lstat(fp->path, &sbuf) == 0;
 	fp->filetype = get_filetype(sbuf.st_mode);
 	fp->sbuf = sbuf;
+	fp->pwd = getpwuid(sbuf.st_uid);
+	fp->grp = getgrgid(sbuf.st_gid);
 	return (fp);
 }

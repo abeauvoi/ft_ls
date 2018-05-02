@@ -6,13 +6,11 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/01 00:22:20 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 04:40:54 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
 #include "ft_ls.h"
 /*
 ** SIZE_SORT cancels TIME_SORT but not the other way around, it is handled
@@ -20,9 +18,9 @@
 */
 
 static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, SIZE_SORT, RECURSIVE,
-	DISPLAY_MASK, LONG_LIST, REVERSE, MODIF_SORT};
+	DISPLAY_MASK, PRINT_INODE, LONG_LIST, REVERSE, PRINT_BLOCKS, MODIF_SORT};
 
-static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
+static void		parse_one_arg(const char *arg, t_ls_opts *options)
 {
 	size_t		optind;
 	const char	*tmp;
@@ -33,8 +31,8 @@ static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
 		if ((tmp = ft_strchr(FT_LS_OPTIONS, *arg)) != NULL)
 		{
 			optind = tmp - FT_LS_OPTIONS;
-			*flags |= (1U << optind);
-			*flags ^= *flags & (g_masks[optind] - (1U << optind));
+			*options |= (1 << optind);
+			*options ^= *options & (g_masks[optind] - (1 << optind));
 		}
 		else
 			print_error_and_exit(ERR_FMT_A, FT_LS_INVALID_OPT, arg);
@@ -42,20 +40,20 @@ static inline void	parse_one_arg(const char *arg, t_ls_opts *flags)
 	}
 }
 
-size_t				parse_options(const char *const *argv, t_ls_opts *flags)
+size_t			parse_options(const char *const *argv, t_ls_opts *options)
 {
 	size_t		index;
 
 	index = 1;
 	while (argv[index] && argv[index][0] == '-')
 	{
-		parse_one_arg((const char*)argv[index], flags);
+		parse_one_arg((const char*)argv[index], options);
 		++index;
 	}
 	return (index);
 }
 
-void				insert_command_line_args(const char *const *argv,
+void			insert_command_line_args(const char *const *argv,
 		t_ls *info)
 {
 	struct stat	sbuf;
@@ -63,7 +61,7 @@ void				insert_command_line_args(const char *const *argv,
 
 	while (*argv)
 	{
-		++info->nb_dirs;
+		++info->nb_args;
 		if (lstat(*argv++, &sbuf) == -1)
 		{
 			ft_perror(argv[-1]);

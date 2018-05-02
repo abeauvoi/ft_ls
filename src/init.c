@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 06:59:42 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 00:22:23 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 07:44:05 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	init(t_ls *info)
 	ft_bzero(info, sizeof(*info));
 	info->outf = short_format;
 	info->cmpf = cmp;
+	info->a = info->buf;
+	info->z = info->buf + FT_LS_BUFSIZ;
 }
 
 const char	**setup(t_ls *info, const char **argv)

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:12:54 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 00:53:04 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/02 06:04:30 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int			main(int argc, const char **argv)
 	argv = setup(&info, argv);
 	bubble_sort_argv(argv);
 	insert_command_line_args(argv, &info);
-	test(info, info.entries, info.dirs);
+	core(info, info.entries, info.dirs);
 	return (0);
 }
