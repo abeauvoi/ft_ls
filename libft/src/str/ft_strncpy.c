@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/14 17:52:48 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 06:43:15 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/03 02:05:24 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char		*ft_strncpy(char *dst, const char *src, size_t len)
 	char	*d;
 
 	d = dst;
-	while (len-- && *src)
+	while (*src && len-- > 0)
 		*d++ = *src++;
 	while (len--)
 		*d++ = 0;

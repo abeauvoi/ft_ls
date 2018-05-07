@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/04/28 00:52:48 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 05:23:22 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,21 +53,21 @@ bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 	return (ft_strcmp(arg1->path, arg2->path) < 0);
 }
 
-enum e_filetype	get_filetype(mode_t protection)
+enum e_filetype	get_filetype(mode_t mode)
 {
-	if (S_ISFIFO(protection))
+	if (S_ISFIFO(mode))
 		return (FIFO);
-	else if (S_ISCHR(protection))
+	else if (S_ISCHR(mode))
 		return (CHARDEV);
-	else if (S_ISDIR(protection))
+	else if (S_ISDIR(mode))
 		return (DIRECTORY);
-	else if (S_ISBLK(protection))
+	else if (S_ISBLK(mode))
 		return (BLOCKDEV);
-	else if (S_ISREG(protection))
+	else if (S_ISREG(mode))
 		return (NORMAL);
-	else if (S_ISLNK(protection))
+	else if (S_ISLNK(mode))
 		return (SYMBOLIC_LINK);
-	else if (S_ISSOCK(protection))
+	else if (S_ISSOCK(mode))
 		return (SOCK);
 	return (UNKNOWN);
 }

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 18:46:25 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 12:15:55 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 05:37:54 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,23 @@ void	perror_and_exit(void)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_perror(const char *arg)
+void	ft_perror(const char *arg, size_t arglen, t_ls *info)
 {
 	char	buf[MAXNAMLEN + MAX_ERR_SIZE + sizeof("ft_ls: : ")];
+	char	*bufp;
+	char	*errmsg;
 
-	strcpy(buf, "ft_ls: ");
-	strcpy(buf + 7, arg);
-	strcat(buf, ": ");
-	strcat(buf, strerror(errno));
+	bufp = buf;
+	ft_strcpy(bufp, "ft_ls: ");
+	bufp += 7;
+	ft_strcpy(bufp, arg);
+	bufp += arglen;
+	ft_strcpy(bufp, ": ");
+	bufp += 2;
+	ft_strcpy(bufp, errmsg = strerror(errno));
+	bufp += ft_strlen(errmsg);
+	*bufp++ = '\n';
+	*bufp = 0;
 	errno = 0;
-	ft_putendl_fd(buf, 2);
+	strtobuf(info, buf, bufp - buf);
 }

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 04:40:54 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 05:03:35 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 ** separately.
 */
 
-static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, SIZE_SORT, RECURSIVE,
-	DISPLAY_MASK, PRINT_INODE, LONG_LIST, REVERSE, PRINT_BLOCKS, MODIF_SORT};
+static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, FILETYPE_INDICATOR, 
+	SIZE_SORT, RECURSIVE, DISPLAY_MASK, PRINT_INODE, LONG_LIST, REVERSE,
+	PRINT_BLOCKS, MODIF_SORT};
 
 static void		parse_one_arg(const char *arg, t_ls_opts *options)
 {
@@ -64,7 +65,7 @@ void			insert_command_line_args(const char *const *argv,
 		++info->nb_args;
 		if (lstat(*argv++, &sbuf) == -1)
 		{
-			ft_perror(argv[-1]);
+			ft_perror(argv[-1], ft_strlen(argv[-1]), info);
 			continue ;
 		}
 		new = lstnew();

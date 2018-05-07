@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 12:22:18 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 05:37:14 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ void	display_entries(t_fileinfo **entries, t_fileinfo **tmp,
 {
 	while (*entries)
 	{
-		info->outf(*entries, *info);
+		info->outf(*entries, info);
 		if (tmp && (info->options & RECURSIVE)
-				&& (*entries)->filetype == DIRECTORY)
+				&& (*entries)->filetype == DIRECTORY
+				&& ft_strcmp((*entries)->name, ".") != 0
+				&& ft_strcmp((*entries)->name, "..") != 0)
 		{
 			++info->nb_args;
 			lstpush(tmp, lstpop(entries));
@@ -62,28 +64,31 @@ static void	clear_info_current_dir(t_ls *info)
 	info->max_nlink = 0;
 	info->max_file_size = 0;
 	info->max_block_size = 0;
-	ft_bzero(info->long_format_col_widths,
-			sizeof(info->long_format_col_widths));
+	ft_bzero(info->lfmt_cwidth, sizeof(info->lfmt_cwidth));
 }
 
-void	core(t_ls info, t_fileinfo *entries, t_fileinfo *dirs)
+void	core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 {
-	DIR				*dirp;
+	DIR		*dirp;
 
-	display_entries(&entries, NULL, &info);
+	display_entries(&entries, NULL, info);
 	while (dirs)
 	{
+		if (info->nb_args > 1)
+			print_dir_name(info, dirs->path, dirs->pathlen);
 		if (!(dirp = opendir(dirs->path)))
 		{
-			ft_perror(dirs->name);
-			lstdel_head(&dirs, &info.dirs);
+			ft_perror(dirs->name, dirs->namlen, info);
+			lstdel_head(&dirs, &info->dirs);
+			if (dirs)
+				chartobuf(info, '\n');
 		}
 		else
 		{
-			read_current_dir(&info, &entries, &dirs, dirp);
+			read_current_dir(info, &entries, &dirs, dirp);
 			if (closedir(dirp) == -1)
-				ft_perror(dirs->path);
-			clear_info_current_dir(&info);
+				ft_perror(dirs->path, dirs->pathlen, info);
+			clear_info_current_dir(info);
 		}
 	}
 }

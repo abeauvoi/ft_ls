@@ -6,20 +6,20 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/04 17:31:02 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/09/07 16:41:06 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/06 20:09:51 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-long		ft_pow(int nb, unsigned int pow)
+long		ft_pow(int base, unsigned int exponent)
 {
-	long	res;
+	long	result;
 
-	if (pow == 0)
+	if (exponent == 0)
 		return (1);
-	res = 1;
-	while (pow-- > 0)
-		res *= nb;
-	return (res);
+	result = 1;
+	while (exponent-- > 0)
+		result *= base;
+	return (result);
 }

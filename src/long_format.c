@@ -6,16 +6,12 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 12:06:53 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 02:59:10 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <time.h>
-#include <unistd.h>
 #include <sys/xattr.h>
 #include <sys/acl.h>
-#include <stdlib.h>
-#include <sys/types.h>
 #include "ft_ls.h"
 #include "ft_printf.h"
 
@@ -67,7 +63,7 @@ static char		get_grp_exec_rights(mode_t mode)
 	return ('-');
 }
 
-static void		print_filemode(t_fileinfo *entry, char *buf)
+static char		*print_filemode(t_fileinfo *entry, char *bufp)
 {
 	char				modebuf[11 + 1];
 	static char			*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
@@ -76,21 +72,20 @@ static void		print_filemode(t_fileinfo *entry, char *buf)
 	modebuf[0] = FILETYPE_LETTER[entry->filetype];
 	if (entry->stat_ok)
 	{
-		strcpy(modebuf + 1, rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6]);
+		ft_strcpy(modebuf + 1, rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6]);
 		modebuf[3] = get_usr_exec_rights(entry->sbuf.st_mode);
-		strcpy(modebuf + 4, rwx[(entry->sbuf.st_mode & S_IRWXG) >> 3]);
+		ft_strcpy(modebuf + 4, rwx[(entry->sbuf.st_mode & S_IRWXG) >> 3]);
 		modebuf[6] = get_grp_exec_rights(entry->sbuf.st_mode);
-		strcpy(modebuf + 7, rwx[entry->sbuf.st_mode & S_IRWXO]);
+		ft_strcpy(modebuf + 7, rwx[entry->sbuf.st_mode & S_IRWXO]);
 		modebuf[10] = get_xattr(entry->path, entry->sbuf.st_mode);
 	}
 	else
 		ft_memset(modebuf + 1, '?', 10);
 	modebuf[11] = 0;
-	ft_printf("%s ", modebuf);
-	(void)buf;
-	//ft_strcpy(bufp, modebuf);
-	//bufp += 12;
-	//return (bufp);
+	ft_strcpy(bufp, modebuf);
+	bufp += 11;
+	*bufp++ = ' ';
+	return (bufp);
 }
 
 /*
@@ -102,30 +97,27 @@ static void		print_filemode(t_fileinfo *entry, char *buf)
 ** - User name/UID
 ** - Group name/GID
 ** - File size/Major, Minor
-** - Date
+** - Timestamp
 ** - File name
 */
 
-void			long_format(t_fileinfo *entry, t_ls info)
+void			long_format(t_fileinfo *entry, t_ls *info)
 {
-	char	buf[INT_BUFSIZE_BOUND(ino_t) + INT_BUFSIZE_BOUND(blkcnt_t)
-		+ INT_BUFSIZE_BOUND(nlink_t) + INT_BUFSIZE_BOUND(uid_t)
-		+ INT_BUFSIZE_BOUND(gid_t) + INT_BUFSIZE_BOUND(dev_t)
-		+ INT_BUFSIZE_BOUND(dev_t) + entry->namlen + 303];
 	char	*bufp;
+	char	buf[2000];
 
+	save_col_widths(info);
 	bufp = buf;
-	if (info.options & PRINT_INODE)
-		print_inode(entry);
-	if (info.options & PRINT_BLOCKS)
-		print_blocks(entry);
-	print_filemode(entry, buf);
-	ft_printf("%u ", entry->sbuf.st_nlink);
-	print_user(entry->sbuf.st_uid);
-	print_group(entry->sbuf.st_gid);
-	print_size(entry);
-	ft_printf("%.12s ", ctime((time_t*)&entry->sbuf.st_mtime) + 4);
-	/*bufp = */print_filename(entry);
-//	*bufp = 0;
-//	bufferize_str(info, buf, len);
+	if (info->options & PRINT_INODE)
+		bufp = print_inode(entry, bufp, info->lfmt_cwidth[INODE_COL]);
+	if (info->options & PRINT_BLOCKS)
+		bufp = print_blocks(entry, bufp, info->lfmt_cwidth[BLOCKS_COL]);
+	bufp = print_filemode(entry, bufp);
+	bufp = print_nlinks(entry, bufp, info->lfmt_cwidth[NLINKS_COL]);
+	bufp = print_user(entry, bufp, info->lfmt_cwidth[OWNER_COL]);
+	bufp = print_group(entry, bufp, info->lfmt_cwidth[GROUP_COL]);
+	bufp = print_size(entry, bufp, *info);
+	bufp = print_time_info(entry, bufp);
+	bufp = print_filename(entry, bufp, *info);
+	strtobuf(info, buf, bufp - buf);
 }

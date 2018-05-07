@@ -6,12 +6,11 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/02 11:43:51 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/07 05:27:31 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include <sys/types.h>
 #include "ft_ls.h"
 
 void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls info)
@@ -61,17 +60,24 @@ t_fileinfo	*lstnew(void)
 	return (new);
 }
 
-t_fileinfo	*lstpop(t_fileinfo **head)
+static void	init_long_list_info(t_fileinfo *fp, bool stat_ok)
 {
-	t_fileinfo	*tmp;
+	struct passwd	*pwd;
+	struct group	*grp;
 
-	tmp = (*head);
-	(*head) = (*head)->next;
-	tmp->next = NULL;
-	return (tmp);
+	if (stat_ok && (pwd = getpwuid(fp->sbuf.st_uid)) != NULL)
+	{
+		fp->user_name = ft_strdup(pwd->pw_name);
+		fp->user_name_length = ft_strlen(fp->user_name);
+	}
+	if (stat_ok && (grp = getgrgid(fp->sbuf.st_gid)) != NULL)
+	{
+		fp->group_name = ft_strdup(grp->gr_name);
+		fp->group_name_length = ft_strlen(fp->group_name);
+	}
 }
 
-t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
+t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de, t_ls info)
 {
 	t_fileinfo		*fp;
 	struct stat		sbuf;
@@ -85,9 +91,9 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de)
 	fp->pathlen = cur_dir->pathlen + fp->namlen
 		+ (cur_dir->path[cur_dir->pathlen - 1] == '/' ? 0 : 1);
 	fp->stat_ok = lstat(fp->path, &sbuf) == 0;
-	fp->filetype = get_filetype(sbuf.st_mode);
 	fp->sbuf = sbuf;
-	fp->pwd = getpwuid(sbuf.st_uid);
-	fp->grp = getgrgid(sbuf.st_gid);
+	if (info.options & LONG_LIST)
+		init_long_list_info(fp, fp->stat_ok);
+	fp->filetype = (de->d_type > 2 ? (de->d_type >> 1) + 1 : de->d_type);
 	return (fp);
 }
