@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:27:24 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:48:55 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ size_t				parse_options(const char *const *argv, t_ls_opts *options)
 }
 
 static t_fileinfo	*init_new(t_fileinfo *new, struct stat sbuf,
-		const char *const *argv)
+		const char *const *argv, t_ls info)
 {
 	struct passwd	*pwd;
 	struct group	*grp;
@@ -79,6 +79,8 @@ static t_fileinfo	*init_new(t_fileinfo *new, struct stat sbuf,
 	new->stat_ok = 1;
 	new->sbuf = sbuf;
 	new->filetype = get_filetype(sbuf.st_mode);
+	new->ctab_index = (info.colored_output ? get_color_table_index(sbuf.st_mode)
+			: NO_COLOR);
 	return (new);
 }
 
@@ -96,7 +98,7 @@ void				insert_command_line_args(const char *const *argv,
 			ft_perror(argv[-1], ft_strlen(argv[-1]), info);
 			continue ;
 		}
-		new = init_new(lstnew(), sbuf, argv);
+		new = init_new(lstnew(), sbuf, argv, *info);
 		if (S_ISDIR(sbuf.st_mode))
 			lstpush(&info->dirs, new);
 		else
