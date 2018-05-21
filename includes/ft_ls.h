@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 06:01:24 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 03:57:08 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 ** Macros
 */
 
-# define FT_LS_BUFSIZ 4096
+# define FT_LS_BUFSIZ 8192
 # define FILETYPE_LETTER "?pcdb-lsw"
 # define FT_LS_OPTIONS "AFSRailrst"
 # define MAX_ERR_SIZE 47
@@ -48,7 +48,7 @@ enum	e_filetype
 	BLOCKDEV,
 	NORMAL,
 	SYMBOLIC_LINK,
-	SOCK,
+	SOCKET,
 	WHITEOUT
 };
 
@@ -78,6 +78,22 @@ enum			e_col_id
 	MINOR_DEV_COL,
 	FILE_SIZE_COL,
 	LFMT_COLS
+};
+
+enum			e_color_index
+{
+	COLOR_DIR,
+	COLOR_LINK,
+	COLOR_SOCK,
+	COLOR_FIFO,
+	COLOR_BIN,
+	COLOR_BDEV,
+	COLOR_CDEV,
+	COLOR_BIN_SETUID,
+	COLOR_BIN_SETGID,
+	COLOR_DIR_OTHERS_STICKY,
+	COLOR_DIR_OTHERS_NO_STICKY,
+	COLOR_INDEXES
 };
 
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
@@ -116,9 +132,11 @@ typedef struct	s_ls
 	t_cmp			cmpf;
 	size_t			nb_args;
 	char			buf[FT_LS_BUFSIZ + 1];
+	char			color_table[COLOR_INDEXES][9 + 1];
 	char			*a;
 	char			*z;
-	bool			use_env_colors;
+	bool			colored_output;
+	bool			found_major_minor_dev;
 	uint8_t			lfmt_cwidth[LFMT_COLS];
 	ino_t			max_inode;
 	blkcnt_t		max_block_size;
@@ -142,7 +160,7 @@ void			core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs);
 bool			display_entry(const char *arg, t_ls_opts options);
 void			display_entries(t_fileinfo **entries, t_fileinfo **tmp,
 		t_ls *info);
-void			add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo **tmp);
+void			add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo *tmp);
 void			read_current_dir(t_ls *info, t_fileinfo **entries,
 		t_fileinfo **dirs, DIR *dirp);
 void			print_dir_name(t_ls *info, const char *path, size_t pathlen);
@@ -176,6 +194,7 @@ char			*print_size(t_fileinfo *entry, char *bufp, t_ls info);
 char			*print_blocks(t_fileinfo *entry, char *bufp, uint8_t max_width);
 char			*print_nlinks(t_fileinfo *entry, char *bufp, uint8_t max_width);
 char			*print_time_info(t_fileinfo *entry, char *bufp);
+char			get_others_exec_rights(mode_t mode);
 
 /*
 ** Utils
@@ -191,7 +210,8 @@ void			strtobuf(t_ls *info, const char *str, int len);
 void			chartobuf(t_ls *info, char c);
 char			*ft_ultoa(char *ptr, unsigned long val, bool is_negative);
 char			*pad_buffer(char *ptr, size_t len);
-char			get_filetype_indicator(t_fileinfo *entry);
+char			get_filetype_indicator(bool stat_ok, mode_t mode,
+		enum e_filetype type);
 char			*itob(char *mbuf, uintmax_t value, int max_width,
 		bool is_negative);
 int				numstrlen(intmax_t n);
@@ -208,6 +228,6 @@ t_fileinfo		*lstpop(t_fileinfo **head);
 t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de,
 		t_ls info);
 void			lstpush(t_fileinfo **head, t_fileinfo *entry);
-void			lstdel_head(t_fileinfo **head, t_fileinfo **dup);
+void			lstdel_head(t_fileinfo **head);
 
 #endif

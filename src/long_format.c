@@ -6,32 +6,40 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 02:59:10 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 03:57:58 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/xattr.h>
 #include <sys/acl.h>
 #include "ft_ls.h"
-#include "ft_printf.h"
 
-static char		get_xattr(const char *path, mode_t mode)
+static inline char	get_xattr(const char *path)
 {
 	acl_t		acl;
+	acl_entry_t	entry;
+	int			ret;
 
-	acl = acl_get_link_np(path, ACL_TYPE_EXTENDED);
-	acl_free(acl);
-	if (mode & (S_IFREG | S_IFDIR))
+	acl = acl_get_file(path, ACL_TYPE_EXTENDED);
+	if (!acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &entry) == -1)
 	{
-		if (listxattr(path, NULL, 0, XATTR_NOFOLLOW))
-			return ('@');
-		else if (acl)
-			return ('+');
+		acl_free(acl);
+		acl = NULL;
 	}
+	if ((ret = listxattr(path, NULL, 0, XATTR_NOFOLLOW)) < 0
+			&& (errno == EPERM || errno == EACCES || errno == EFAULT))
+	{
+		errno = 0;
+		return (' ');
+	}
+	else if (ret > 0)
+		return ('@');
+	else if (acl)
+		return ('+');
 	return (' ');
 }
 
-static char		get_usr_exec_rights(mode_t mode)
+static inline char	get_usr_exec_rights(mode_t mode)
 {
 	t_u16		ret;
 
@@ -47,7 +55,7 @@ static char		get_usr_exec_rights(mode_t mode)
 	return ('-');
 }
 
-static char		get_grp_exec_rights(mode_t mode)
+static inline char	get_grp_exec_rights(mode_t mode)
 {
 	t_u16		ret;
 
@@ -56,20 +64,24 @@ static char		get_grp_exec_rights(mode_t mode)
 		if (ret == S_IXGRP)
 			return ('x');
 		else if (ret == S_ISGID)
-			return ('T');
+			return ('S');
 		else
-			return ('t');
+			return ('s');
 	}
 	return ('-');
 }
 
-static char		*print_filemode(t_fileinfo *entry, char *bufp)
+static inline char	*print_filemode(t_fileinfo *entry, char *bufp)
 {
 	char				modebuf[11 + 1];
+	unsigned			type_letter_index;
 	static char			*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
 		"rw-", "rwx"};
 
-	modebuf[0] = FILETYPE_LETTER[entry->filetype];
+	type_letter_index = (entry->stat_ok ? (entry->sbuf.st_mode & S_IFMT) >> 12
+			: entry->filetype);
+	modebuf[0] = FILETYPE_LETTER[(entry->stat_ok && type_letter_index > 2 ?
+			(type_letter_index >> 1) + 1 : type_letter_index)];
 	if (entry->stat_ok)
 	{
 		ft_strcpy(modebuf + 1, rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6]);
@@ -77,7 +89,8 @@ static char		*print_filemode(t_fileinfo *entry, char *bufp)
 		ft_strcpy(modebuf + 4, rwx[(entry->sbuf.st_mode & S_IRWXG) >> 3]);
 		modebuf[6] = get_grp_exec_rights(entry->sbuf.st_mode);
 		ft_strcpy(modebuf + 7, rwx[entry->sbuf.st_mode & S_IRWXO]);
-		modebuf[10] = get_xattr(entry->path, entry->sbuf.st_mode);
+		modebuf[9] = get_others_exec_rights(entry->sbuf.st_mode);
+		modebuf[10] = get_xattr(entry->path);
 	}
 	else
 		ft_memset(modebuf + 1, '?', 10);
@@ -101,7 +114,7 @@ static char		*print_filemode(t_fileinfo *entry, char *bufp)
 ** - File name
 */
 
-void			long_format(t_fileinfo *entry, t_ls *info)
+void				long_format(t_fileinfo *entry, t_ls *info)
 {
 	char	*bufp;
 	char	buf[2000];

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 06:09:11 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 02:18:01 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 02:25:28 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char				*ft_ultoa(char *ptr, unsigned long val, bool is_negative)
 
 char				*pad_buffer(char *ptr, size_t len)
 {
-	while (len--)
+	while (len-- > 0)
 		*ptr++ = ' ';
 	return (ptr);
 }

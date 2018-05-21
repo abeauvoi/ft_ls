@@ -6,14 +6,14 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 04:46:49 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 02:08:28 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 03:56:55 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <time.h>
 #include "ft_ls.h"
 
-char	*print_blocks(t_fileinfo *entry, char *bufp, uint8_t max_width)
+inline char	*print_blocks(t_fileinfo *entry, char *bufp, uint8_t max_width)
 {
 	if (entry->stat_ok)
 		bufp = itob(bufp, entry->sbuf.st_blocks, max_width,
@@ -27,7 +27,7 @@ char	*print_blocks(t_fileinfo *entry, char *bufp, uint8_t max_width)
 	return (bufp);
 }
 
-char	*print_nlinks(t_fileinfo *entry, char *bufp, uint8_t max_width)
+inline char	*print_nlinks(t_fileinfo *entry, char *bufp, uint8_t max_width)
 {
 	if (entry->stat_ok)
 		bufp = itob(bufp, entry->sbuf.st_nlink, max_width,
@@ -45,11 +45,10 @@ char	*print_nlinks(t_fileinfo *entry, char *bufp, uint8_t max_width)
 ** Example output of ctime : "Thu Nov 24 18:22:48 1986\n\0"
 */
 
-char	*print_time_info(t_fileinfo *entry, char *bufp)
+inline char	*print_time_info(t_fileinfo *entry, char *bufp)
 {
 	time_t	epoch;
 	char	*timestamp;
-	size_t	len;
 
 	if (entry->stat_ok)
 	{
@@ -57,12 +56,12 @@ char	*print_time_info(t_fileinfo *entry, char *bufp)
 		ft_memcpy(bufp, timestamp, 7);
 		bufp += 7;
 		timestamp += 7;
-			if (time(&epoch) != -1
-					&& entry->sbuf.st_mtime - epoch > SECONDS_IN_SIX_MONTHS)
-				ft_memcpy(bufp, timestamp + 9, len = 4);
-			else
-				ft_memcpy(bufp, timestamp, len = 5);
-			bufp += len;;
+		if (time(&epoch) != -1
+				&& epoch - entry->sbuf.st_mtime > SECONDS_IN_SIX_MONTHS)
+			ft_memcpy(bufp, timestamp + 8, 5);
+		else
+			ft_memcpy(bufp, timestamp, 5);
+		bufp += 5;
 	}
 	else
 	{
@@ -71,4 +70,20 @@ char	*print_time_info(t_fileinfo *entry, char *bufp)
 	}
 	*bufp++ = ' ';
 	return (bufp);
+}
+
+inline char	get_others_exec_rights(mode_t mode)
+{
+	t_u16	ret;
+
+	if ((ret = mode & (S_ISVTX | S_IXOTH)))
+	{
+		if (ret == S_IXOTH)
+			return ('x');
+		else if (ret == S_ISVTX)
+			return ('T');
+		else
+			return ('t');
+	}
+	return ('-');
 }

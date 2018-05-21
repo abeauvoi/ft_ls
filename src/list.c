@@ -6,12 +6,13 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 05:27:31 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 03:03:59 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "ft_ls.h"
+#include "ft_printf.h"
 
 void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls info)
 {
@@ -80,7 +81,6 @@ static void	init_long_list_info(t_fileinfo *fp, bool stat_ok)
 t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de, t_ls info)
 {
 	t_fileinfo		*fp;
-	struct stat		sbuf;
 
 	fp = lstnew();
 	fp->name = ft_strdup(de->d_name);
@@ -90,8 +90,7 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de, t_ls info)
 		perror_and_exit();
 	fp->pathlen = cur_dir->pathlen + fp->namlen
 		+ (cur_dir->path[cur_dir->pathlen - 1] == '/' ? 0 : 1);
-	fp->stat_ok = lstat(fp->path, &sbuf) == 0;
-	fp->sbuf = sbuf;
+	fp->stat_ok = lstat(fp->path, &fp->sbuf) == 0;
 	if (info.options & LONG_LIST)
 		init_long_list_info(fp, fp->stat_ok);
 	fp->filetype = (de->d_type > 2 ? (de->d_type >> 1) + 1 : de->d_type);

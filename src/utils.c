@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 05:23:22 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/18 09:10:04 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ enum e_filetype	get_filetype(mode_t mode)
 	else if (S_ISLNK(mode))
 		return (SYMBOLIC_LINK);
 	else if (S_ISSOCK(mode))
-		return (SOCK);
+		return (SOCKET);
 	return (UNKNOWN);
 }
 

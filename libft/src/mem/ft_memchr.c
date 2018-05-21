@@ -6,11 +6,11 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/14 16:45:44 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/04/18 18:20:40 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/20 22:24:37 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft_types.h"
 
 void					*ft_memchr(const void *s, int c, size_t n)
 {

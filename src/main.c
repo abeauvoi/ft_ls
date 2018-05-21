@@ -6,10 +6,11 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:12:54 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 02:10:02 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 00:21:13 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "ft_ls.h"
 
 int			main(int argc, const char **argv)
@@ -26,7 +27,7 @@ int			main(int argc, const char **argv)
 	if (info.a != info.buf)
 	{
 		*info.a = 0;
-		ft_putstr(info.buf);
+		write(1, info.buf, info.a - info.buf);
 	}
 	return (0);
 }

@@ -6,12 +6,12 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/15 21:30:46 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/01/10 23:52:37 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 00:21:23 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include <unistd.h>
+#include "libft.h"
 
 void	ft_putstr(char const *str)
 {

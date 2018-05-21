@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 05:03:35 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 02:56:44 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,33 @@ size_t			parse_options(const char *const *argv, t_ls_opts *options)
 	return (index);
 }
 
+static t_fileinfo	*init_new(t_fileinfo *new, struct stat sbuf,
+		const char *const *argv)
+{
+	struct passwd	*pwd;
+	struct group	*grp;
+
+	if (!new || !(new->name = ft_strdup(argv[-1]))
+			|| !(new->path = ft_strdup(new->name)))
+		perror_and_exit();
+	if ((pwd = getpwuid(sbuf.st_uid)))
+	{
+		new->user_name = ft_strdup(pwd->pw_name);
+		new->user_name_length = ft_strlen(new->user_name);
+	}
+	if ((grp = getgrgid(sbuf.st_gid)))
+	{
+		new->group_name = ft_strdup(grp->gr_name);
+		new->group_name_length = ft_strlen(new->group_name);
+	}
+	new->namlen = ft_strlen(argv[-1]);
+	new->pathlen = new->namlen;
+	new->stat_ok = 1;
+	new->sbuf = sbuf;
+	new->filetype = get_filetype(sbuf.st_mode);
+	return (new);
+}
+
 void			insert_command_line_args(const char *const *argv,
 		t_ls *info)
 {
@@ -68,15 +95,7 @@ void			insert_command_line_args(const char *const *argv,
 			ft_perror(argv[-1], ft_strlen(argv[-1]), info);
 			continue ;
 		}
-		new = lstnew();
-		if (!(new->name = ft_strdup(argv[-1]))
-				|| !(new->path = ft_strdup(new->name)))
-			perror_and_exit();
-		new->namlen = ft_strlen(argv[-1]);
-		new->pathlen = new->namlen;
-		new->stat_ok = 1;
-		new->sbuf = sbuf;
-		new->filetype = get_filetype(sbuf.st_mode);
+		new = init_new(lstnew(), sbuf, argv);
 		if (S_ISDIR(sbuf.st_mode))
 			lstpush(&info->dirs, new);
 		else

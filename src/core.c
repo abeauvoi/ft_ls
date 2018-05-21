@@ -6,13 +6,13 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/07 05:37:14 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 00:37:47 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-bool	display_entry(const char *arg, t_ls_opts options)
+bool		display_entry(const char *arg, t_ls_opts options)
 {
 	return !(*arg == '.'
 			&& (!(options & (ALL | ALMOST_ALL))
@@ -20,7 +20,7 @@ bool	display_entry(const char *arg, t_ls_opts options)
 						&& (arg[1] == 0 || (arg[1] == '.' && arg[2] == 0)))));
 }
 
-void	display_entries(t_fileinfo **entries, t_fileinfo **tmp,
+void		display_entries(t_fileinfo **entries, t_fileinfo **tmp,
 		t_ls *info)
 {
 	while (*entries)
@@ -35,22 +35,21 @@ void	display_entries(t_fileinfo **entries, t_fileinfo **tmp,
 			lstpush(tmp, lstpop(entries));
 		}
 		else
-			lstdel_head(entries, &info->entries);
+			lstdel_head(entries);
 	}
 }
 
-void	add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo **tmp)
+void		add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo *tmp)
 {
 	t_fileinfo	*ptr;
 
-	if (!*tmp)
+	if (!tmp)
 		return ;
-	ptr = *tmp;
+	ptr = tmp;
 	while (ptr->next)
 		ptr = ptr->next;
 	ptr->next = (*dirs);
-	(*dirs) = (*tmp);
-	(*tmp) = NULL;
+	(*dirs) = tmp;
 }
 
 static void	clear_info_current_dir(t_ls *info)
@@ -64,10 +63,11 @@ static void	clear_info_current_dir(t_ls *info)
 	info->max_nlink = 0;
 	info->max_file_size = 0;
 	info->max_block_size = 0;
+	info->found_major_minor_dev = 0;
 	ft_bzero(info->lfmt_cwidth, sizeof(info->lfmt_cwidth));
 }
 
-void	core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
+void		core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 {
 	DIR		*dirp;
 
@@ -79,7 +79,7 @@ void	core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 		if (!(dirp = opendir(dirs->path)))
 		{
 			ft_perror(dirs->name, dirs->namlen, info);
-			lstdel_head(&dirs, &info->dirs);
+			lstdel_head(&dirs);
 			if (dirs)
 				chartobuf(info, '\n');
 		}
