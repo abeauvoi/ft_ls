@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/07/10 22:44:02 by abeauvoi          #+#    #+#             */
-/*   Updated: 2017/10/04 15:45:31 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 05:27:04 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static t_step	body(const char *data, t_ftpf_info *spec, t_ftpf_buf *buffer,
 		{
 			copy_to_buf(buffer, '\\');
 			copy_to_buf(buffer, digits[33]);
-			copy_to_buf(buffer, digits[*data & 0xF0]);
+			copy_to_buf(buffer, digits[(*data >> 4) & 0xF]);
 			copy_to_buf(buffer, digits[*data & 0xF]);
 		}
 		else

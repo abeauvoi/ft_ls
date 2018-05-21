@@ -6,22 +6,23 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 02:56:44 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:27:24 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/types.h>
 #include "ft_ls.h"
+
 /*
 ** SIZE_SORT cancels TIME_SORT but not the other way around, it is handled
 ** separately.
 */
 
-static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, FILETYPE_INDICATOR, 
+static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, FILETYPE_INDICATOR,
 	SIZE_SORT, RECURSIVE, DISPLAY_MASK, PRINT_INODE, LONG_LIST, REVERSE,
 	PRINT_BLOCKS, MODIF_SORT};
 
-static void		parse_one_arg(const char *arg, t_ls_opts *options)
+static void			parse_one_arg(const char *arg, t_ls_opts *options)
 {
 	size_t		optind;
 	const char	*tmp;
@@ -41,7 +42,7 @@ static void		parse_one_arg(const char *arg, t_ls_opts *options)
 	}
 }
 
-size_t			parse_options(const char *const *argv, t_ls_opts *options)
+size_t				parse_options(const char *const *argv, t_ls_opts *options)
 {
 	size_t		index;
 
@@ -81,7 +82,7 @@ static t_fileinfo	*init_new(t_fileinfo *new, struct stat sbuf,
 	return (new);
 }
 
-void			insert_command_line_args(const char *const *argv,
+void				insert_command_line_args(const char *const *argv,
 		t_ls *info)
 {
 	struct stat	sbuf;

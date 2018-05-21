@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 03:33:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 03:03:59 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:24:44 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		lstinsert(t_fileinfo **head, t_fileinfo *entry, t_ls info)
 void		lstpush(t_fileinfo **head, t_fileinfo *entry)
 {
 	t_fileinfo	*tmp;
-	
+
 	if (*head == NULL)
 		*head = entry;
 	else
@@ -50,7 +50,7 @@ void		lstpush(t_fileinfo **head, t_fileinfo *entry)
 		tmp->next = entry;
 	}
 }
-		
+
 t_fileinfo	*lstnew(void)
 {
 	t_fileinfo	*new;
@@ -94,5 +94,7 @@ t_fileinfo	*init_node(t_fileinfo *cur_dir, struct dirent *de, t_ls info)
 	if (info.options & LONG_LIST)
 		init_long_list_info(fp, fp->stat_ok);
 	fp->filetype = (de->d_type > 2 ? (de->d_type >> 1) + 1 : de->d_type);
+	fp->ctab_index = (fp->stat_ok && info.colored_output ?
+			get_color_table_index(fp->sbuf.st_mode) : NO_COLOR);
 	return (fp);
 }

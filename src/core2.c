@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 05:33:13 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 04:10:05 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:23:04 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 static void			update_max_values(t_ls *info, t_fileinfo *entry)
 {
-	if (!entry->stat_ok)
-		return ;
 	if (info->options & PRINT_INODE && entry->sbuf.st_ino > info->max_inode)
 		info->max_inode = entry->sbuf.st_ino;
 	if (info->options & PRINT_BLOCKS
@@ -82,9 +80,11 @@ static blkcnt_t		loop(t_ls *info, DIR *dirp, t_fileinfo **entries)
 		if (display_entry(de->d_name, info->options))
 		{
 			fp = init_node(info->dirs, de, *info);
-			update_max_values(info, fp);
 			if (fp->stat_ok && info->options & LONG_LIST)
+			{
+				update_max_values(info, fp);
 				total_blocks += fp->sbuf.st_blocks;
+			}
 			if (!info->found_major_minor_dev && (fp->stat_ok ?
 					S_ISBLK(fp->sbuf.st_mode) || S_ISCHR(fp->sbuf.st_mode) :
 					fp->filetype == CHARDEV || fp->filetype == BLOCKDEV))

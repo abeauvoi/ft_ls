@@ -6,16 +6,16 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/18 09:10:04 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:28:52 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-char		*concat_path(const char *path, const char *arg, size_t len_1,
+char			*concat_path(const char *path, const char *arg, size_t len_1,
 		size_t len_2)
 {
-	char	*join;
+	char		*join;
 
 	if (!(join = ft_strnew(len_1 + len_2 + 1)))
 		return (NULL);
@@ -25,11 +25,11 @@ char		*concat_path(const char *path, const char *arg, size_t len_1,
 		join[len_1++] = '/';
 		join[len_1] = 0;
 	}
-	ft_strncpy(join + len_1, arg, len_2); 
+	ft_strncpy(join + len_1, arg, len_2);
 	return (join);
 }
 
-bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
+bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
 	long	diff;
 
@@ -37,11 +37,11 @@ bool		rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 				&& (diff = arg1->sbuf.st_mtime - arg2->sbuf.st_mtime) != 0)
 			|| (options & SIZE_SORT
 				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
-			return (diff < 0);
+		return (diff < 0);
 	return (ft_strcmp(arg1->path, arg2->path) > 0);
 }
 
-bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
+bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 {
 	long	diff;
 
@@ -49,7 +49,7 @@ bool		cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options)
 				&& (diff = arg1->sbuf.st_mtime - arg2->sbuf.st_mtime) != 0)
 			|| (options & SIZE_SORT
 				&& (diff = arg1->sbuf.st_size - arg2->sbuf.st_size) != 0))
-			return (diff > 0);
+		return (diff > 0);
 	return (ft_strcmp(arg1->path, arg2->path) < 0);
 }
 

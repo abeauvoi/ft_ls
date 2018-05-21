@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/01 06:04:32 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 04:02:37 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:20:12 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,14 @@ inline char	*print_filename(t_fileinfo *entry, char *bufp, t_ls info)
 {
 	ssize_t	len;
 
+	if (entry->ctab_index != NO_COLOR)
+		bufp = ft_strcpy_color(bufp,
+				info.ctab[entry->ctab_index],
+				info.len_color[entry->ctab_index]);
 	ft_strcpy_non_printable_chars(bufp, entry->name);
 	bufp += entry->namlen;
+	if (entry->ctab_index != NO_COLOR)
+		bufp = ft_strcpy_color(bufp, RESET_COLOR, 3);
 	if (info.options & FILETYPE_INDICATOR
 			&& (*bufp = get_filetype_indicator(entry->stat_ok,
 					entry->sbuf.st_mode, entry->filetype)) != 0)
@@ -111,7 +117,8 @@ inline char	*print_size(t_fileinfo *entry, char *bufp, t_ls info)
 				entry->sbuf.st_size < 0);
 	else
 	{
-		bufp = pad_buffer(bufp, MAX(info.lfmt_cwidth[FILE_SIZE_COL] - 1, 0));
+		bufp = pad_buffer(bufp,
+				MAX((int)(info.lfmt_cwidth[FILE_SIZE_COL] - 1), 0));
 		*bufp++ = '?';
 	}
 	*bufp++ = ' ';

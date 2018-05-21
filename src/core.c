@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 00:37:47 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:21:40 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 bool		display_entry(const char *arg, t_ls_opts options)
 {
-	return !(*arg == '.'
+	return (!(*arg == '.'
 			&& (!(options & (ALL | ALMOST_ALL))
 				|| ((options & ALMOST_ALL)
-						&& (arg[1] == 0 || (arg[1] == '.' && arg[2] == 0)))));
+						&& (arg[1] == 0 || (arg[1] == '.' && arg[2] == 0))))));
 }
 
 void		display_entries(t_fileinfo **entries, t_fileinfo **tmp,

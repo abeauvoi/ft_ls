@@ -6,14 +6,14 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/28 04:30:58 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 00:34:24 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:25:04 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "ft_ls.h"
 
-void	lstdel_head(t_fileinfo **head)
+void		lstdel_head(t_fileinfo **head)
 {
 	t_fileinfo	*tmp;
 

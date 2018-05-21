@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/05/03 01:28:28 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/05/21 05:08:05 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ VPATH		= $(SRCS_DIR)
 SRCS		= main.c print_err.c parse_argv.c core.c print_usage.c \
 		  long_format.c short_format.c init.c utils.c list.c \
 		  list2.c long_format2.c long_format3.c core2.c utils2.c \
-		  utils3.c
+		  utils3.c utils4.c colors.c
 
 #
 # Build

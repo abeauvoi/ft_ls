@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 03:57:58 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:26:03 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,13 @@ static inline char	get_grp_exec_rights(mode_t mode)
 static inline char	*print_filemode(t_fileinfo *entry, char *bufp)
 {
 	char				modebuf[11 + 1];
-	unsigned			type_letter_index;
+	unsigned			i;
 	static char			*rwx[8] = {"---", "--x", "-w-", "-wx", "r--", "r-x",
 		"rw-", "rwx"};
 
-	type_letter_index = (entry->stat_ok ? (entry->sbuf.st_mode & S_IFMT) >> 12
+	i = (entry->stat_ok ? (entry->sbuf.st_mode & S_IFMT) >> 12
 			: entry->filetype);
-	modebuf[0] = FILETYPE_LETTER[(entry->stat_ok && type_letter_index > 2 ?
-			(type_letter_index >> 1) + 1 : type_letter_index)];
+	modebuf[0] = FILETYPE_LETTER[(entry->stat_ok && i > 2 ? (i >> 1) + 1 : i)];
 	if (entry->stat_ok)
 	{
 		ft_strcpy(modebuf + 1, rwx[(entry->sbuf.st_mode & S_IRWXU) >> 6]);
