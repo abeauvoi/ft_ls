@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/07 05:53:36 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:21:10 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/21 06:34:51 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,29 @@
 static bool	is_color_char(char c)
 {
 	return (('A' <= c && c <= 'H') || ('a' <= c && c <= 'h') || c == 'x');
+}
+
+static char	*get_color_pair(char *p, char *lscolors)
+{
+	if (*lscolors != 'x')
+	{
+		if (!(*lscolors & 32))
+		{
+			*lscolors |= 32;
+			*p++ = '1';
+			*p++ = ';';
+		}
+		*p++ = '3';
+		*p++ = TO_CHAR(*lscolors - 'a');
+	}
+	if (lscolors[1] && lscolors[1] != 'x')
+	{
+		*p++ = ';';
+		lscolors[1] |= 32;
+		*p++ = '4';
+		*p++ = TO_CHAR(lscolors[1] - 'a');
+	}
+	return (p);
 }
 
 void		get_colors(t_ls *info)
@@ -39,24 +62,7 @@ void		get_colors(t_ls *info)
 			}
 			*p++ = '';
 			*p++ = '[';
-			if (*lscolors != 'x')
-			{
-				if (!(*lscolors & 32))
-				{
-					*lscolors |= 32;
-					*p++ = '1';
-					*p++ = ';';
-				}
-				*p++ = '3';
-				*p++ = TO_CHAR(*lscolors - 'a');
-			}
-			if (lscolors[1] && lscolors[1] != 'x')
-			{
-				*p++ = ';';
-				lscolors[1] |= 32;
-				*p++ = '4';
-				*p++ = TO_CHAR(lscolors[1] - 'a');
-			}
+			p = get_color_pair(p, lscolors);
 			lscolors += 2;
 			*p++ = 'm';
 			*p = 0;
