@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:21:40 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/22 21:25:52 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	clear_info_current_dir(t_ls *info)
 	ft_bzero(info->lfmt_cwidth, sizeof(info->lfmt_cwidth));
 }
 
-void		core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
+int			core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 {
 	DIR		*dirp;
 
@@ -91,4 +91,7 @@ void		core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 			clear_info_current_dir(info);
 		}
 	}
+	if (info->buf != info->a)
+		ft_ls_flush_buffer(info);
+	return (0);
 }

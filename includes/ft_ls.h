@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:37:18 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/22 21:23:38 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ size_t			parse_options(const char *const *argv, t_ls_opts *flags);
 void			insert_command_line_args(const char *const *argv, t_ls *info);
 void			init(t_ls *info);
 const char		**setup(t_ls *info, const char **argv);
-void			core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs);
+int				core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs);
 bool			display_entry(const char *arg, t_ls_opts options);
 void			display_entries(t_fileinfo **entries, t_fileinfo **tmp,
 		t_ls *info);
@@ -219,6 +219,7 @@ int				numstrlen(intmax_t n);
 void			save_col_widths(t_ls *info);
 char			*ft_strcpy_non_printable_chars(char *dst, const char *src);
 int				get_color_table_index(mode_t mode);
+void			ft_ls_flush_buffer(t_ls *info);
 
 /*
 ** List
@@ -237,7 +238,6 @@ void			lstdel_head(t_fileinfo **head);
 */
 
 void			get_colors(t_ls *info);
-char			*ft_strcpy_color(char *bufp, const char *color,
-		size_t color_len);
+char			*ft_strcpy_color(char *bufp, const char *color, size_t len);
 
 #endif
