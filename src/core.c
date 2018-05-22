@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 02:28:45 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/22 21:25:52 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:21:42 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,36 +20,27 @@ bool		display_entry(const char *arg, t_ls_opts options)
 						&& (arg[1] == 0 || (arg[1] == '.' && arg[2] == 0))))));
 }
 
-void		display_entries(t_fileinfo **entries, t_fileinfo **tmp,
+void		display_entries(t_fileinfo **entries, t_fileinfo **subdirs,
 		t_ls *info)
 {
+	t_fileinfo	*first_entry;
+
 	while (*entries)
 	{
-		info->outf(*entries, info);
-		if (tmp && (info->options & RECURSIVE)
-				&& (*entries)->filetype == DIRECTORY
-				&& ft_strcmp((*entries)->name, ".") != 0
-				&& ft_strcmp((*entries)->name, "..") != 0)
+		first_entry = lstpop(entries);
+		info->outf(first_entry, info);
+		if (subdirs && (info->options & RECURSIVE)
+				&& (first_entry->stat_ok ? S_ISDIR(first_entry->sbuf.st_mode) :
+					first_entry->filetype == DIRECTORY)
+				&& ft_strcmp(first_entry->name, ".") != 0
+				&& ft_strcmp(first_entry->name, "..") != 0)
 		{
 			++info->nb_args;
-			lstpush(tmp, lstpop(entries));
+			lstpush(subdirs, first_entry);
 		}
 		else
-			lstdel_head(entries);
+			lstdel_one(first_entry);
 	}
-}
-
-void		add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo *tmp)
-{
-	t_fileinfo	*ptr;
-
-	if (!tmp)
-		return ;
-	ptr = tmp;
-	while (ptr->next)
-		ptr = ptr->next;
-	ptr->next = (*dirs);
-	(*dirs) = tmp;
 }
 
 static void	clear_info_current_dir(t_ls *info)
@@ -63,13 +54,24 @@ static void	clear_info_current_dir(t_ls *info)
 	info->max_nlink = 0;
 	info->max_file_size = 0;
 	info->max_block_size = 0;
-	info->found_major_minor_dev = 0;
+	info->found_major_minor_dev = false;
 	ft_bzero(info->lfmt_cwidth, sizeof(info->lfmt_cwidth));
+}
+
+void		print_dir_name(t_ls *info, const char *path, size_t pathlen)
+{
+	size_t	len;
+	char	dir_name[PATH_MAX + 2 + 1];
+
+	len = MIN(pathlen, PATH_MAX);
+	ft_memcpy(dir_name, path, len);
+	ft_strcpy(dir_name + len, ":\n");
+	strtobuf(info, dir_name, len + 2);
 }
 
 int			core(t_ls *info, t_fileinfo *entries, t_fileinfo *dirs)
 {
-	DIR		*dirp;
+	DIR			*dirp;
 
 	display_entries(&entries, NULL, info);
 	while (dirs)

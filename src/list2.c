@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/28 04:30:58 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:25:04 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/22 23:28:54 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,13 @@ t_fileinfo	*lstpop(t_fileinfo **head)
 	(*head) = (*head)->next;
 	tmp->next = NULL;
 	return (tmp);
+}
+
+void		lstdel_one(t_fileinfo *to_del)
+{
+	free(to_del->name);
+	free(to_del->path);
+	free(to_del->user_name);
+	free(to_del->group_name);
+	free(to_del);
 }

@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/01 06:04:32 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:20:12 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 01:07:48 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ inline char	*print_filename(t_fileinfo *entry, char *bufp, t_ls info)
 		bufp = ft_strcpy_color(bufp,
 				info.ctab[entry->ctab_index],
 				info.len_color[entry->ctab_index]);
-	ft_strcpy_non_printable_chars(bufp, entry->name);
+	ft_strcpy(bufp, entry->name);
 	bufp += entry->namlen;
 	if (entry->ctab_index != NO_COLOR)
 		bufp = ft_strcpy_color(bufp, RESET_COLOR, 3);

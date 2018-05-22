@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 19:13:35 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/22 21:23:38 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:27:36 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@
 
 # define FT_LS_BUFSIZ 8192
 # define FILETYPE_LETTER "?pcdb-lsw"
-# define FT_LS_OPTIONS "AFSRailrst"
+# define FT_LS_OPTIONS "AFGSRailrst"
 # define MAX_ERR_SIZE 47
 # define DISPLAY_MASK (ALMOST_ALL | ALL)
 # define ERR_FMT_A "%wError: %s -- (%c)\n"
 # define FT_LS_INVALID_OPT "Invalid option"
 # define MAJOR(x) ((int32_t)(((t_u32)(x) >> 24) & 0xff))
 # define MINOR(x) ((int32_t)((x) & 0xffffff))
-# define SECONDS_IN_SIX_MONTHS (31556952 >> 1)
+# define SIX_MONTHS_IN_SECONDS (31556952 >> 1)
 # define RESET_COLOR "[m"
 
 /*
@@ -58,14 +58,15 @@ typedef enum	e_options
 {
 	ALMOST_ALL = 1,
 	FILETYPE_INDICATOR = 2,
-	SIZE_SORT = 4,
-	RECURSIVE = 8,
-	ALL = 16,
-	PRINT_INODE = 32,
-	LONG_LIST = 64,
-	REVERSE = 128,
-	PRINT_BLOCKS = 256,
-	MODIF_SORT = 512,
+	FILENAME_COLOR = 4,
+	SIZE_SORT = 8,
+	RECURSIVE = 16,
+	ALL = 32,
+	PRINT_INODE = 64,
+	LONG_LIST = 128,
+	REVERSE = 256,
+	PRINT_BLOCKS = 512,
+	MODIF_SORT = 1024,
 	OPTIONS
 }				t_ls_opts;
 
@@ -201,8 +202,8 @@ char			get_others_exec_rights(mode_t mode);
 ** Utils
 */
 
-char			*concat_path(const char *path, const char *arg, size_t len_1,
-		size_t len_2);
+char			*concat_path(const char *path, const char *filename,
+		size_t path_len, size_t filename_len);
 bool			cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 bool			rev_cmp(t_fileinfo *arg1, t_fileinfo *arg2, t_ls_opts options);
 enum e_filetype	get_filetype(mode_t mode);
@@ -232,6 +233,7 @@ t_fileinfo		*init_node(t_fileinfo *cur_dir, struct dirent *de,
 		t_ls info);
 void			lstpush(t_fileinfo **head, t_fileinfo *entry);
 void			lstdel_head(t_fileinfo **head);
+void			lstdel_one(t_fileinfo *to_del);
 
 /*
 ** Colors

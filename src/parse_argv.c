@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/08 22:42:57 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:48:55 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:26:53 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 */
 
 static const uint32_t	g_masks[OPTIONS] = {DISPLAY_MASK, FILETYPE_INDICATOR,
-	SIZE_SORT, RECURSIVE, DISPLAY_MASK, PRINT_INODE, LONG_LIST, REVERSE,
-	PRINT_BLOCKS, MODIF_SORT};
+	FILENAME_COLOR, SIZE_SORT, RECURSIVE, DISPLAY_MASK, PRINT_INODE, LONG_LIST,
+	REVERSE, PRINT_BLOCKS, MODIF_SORT};
 
 static void			parse_one_arg(const char *arg, t_ls_opts *options)
 {

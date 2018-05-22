@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 04:46:49 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 03:56:55 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:30:25 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,11 @@ inline char	*print_time_info(t_fileinfo *entry, char *bufp)
 	if (entry->stat_ok)
 	{
 		timestamp = ctime((time_t *)&entry->sbuf.st_mtime) + 4;
-		ft_memcpy(bufp, timestamp, 7);
+		ft_strncpy(bufp, timestamp, 7);
 		bufp += 7;
 		timestamp += 7;
 		if (time(&epoch) != -1
-				&& epoch - entry->sbuf.st_mtime > SECONDS_IN_SIX_MONTHS)
+				&& epoch - entry->sbuf.st_mtime > SIX_MONTHS_IN_SECONDS)
 			ft_memcpy(bufp, timestamp + 8, 5);
 		else
 			ft_memcpy(bufp, timestamp, 5);

@@ -6,26 +6,37 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/11 02:58:33 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:28:52 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:06:37 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "ft_ls.h"
 
-char			*concat_path(const char *path, const char *arg, size_t len_1,
-		size_t len_2)
+char			*concat_path(const char *path, const char *filename,
+		size_t path_len, size_t filename_len)
 {
 	char		*join;
+	size_t		total_len;
+	bool		need_slash;
 
-	if (!(join = ft_strnew(len_1 + len_2 + 1)))
-		return (NULL);
-	ft_strncpy(join, path, len_1);
-	if (join[len_1 - 1] != '/')
+	if (path[path_len - 1] == '/')
 	{
-		join[len_1++] = '/';
-		join[len_1] = 0;
+		total_len = 1;
+		need_slash = false;
 	}
-	ft_strncpy(join + len_1, arg, len_2);
+	else
+	{
+		total_len = 2;
+		need_slash = true;
+	}
+	total_len += path_len + filename_len;
+	if (!(join = malloc(total_len)))
+		return (NULL);
+	ft_strcpy(join, path);
+	if (need_slash)
+		join[path_len] = '/';
+	ft_strcpy(join + path_len + need_slash, filename);
 	return (join);
 }
 

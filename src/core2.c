@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 05:33:13 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:23:04 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:16:22 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void			update_max_values(t_ls *info, t_fileinfo *entry)
 		info->lfmt_cwidth[GROUP_COL] = entry->group_name_length;
 	else if (entry->sbuf.st_gid > info->max_gid)
 		info->max_gid = entry->sbuf.st_gid;
-	if (S_ISCHR(entry->sbuf.st_mode) || S_ISBLK(entry->sbuf.st_mode))
+	if (S_ISBLK(entry->sbuf.st_mode) || S_ISCHR(entry->sbuf.st_mode))
 	{
 		if (MAJOR(entry->sbuf.st_rdev) > info->max_major)
 			info->max_major = MAJOR(entry->sbuf.st_rdev);
@@ -40,35 +40,38 @@ static void			update_max_values(t_ls *info, t_fileinfo *entry)
 		info->max_file_size = entry->sbuf.st_size;
 }
 
-void				print_dir_name(t_ls *info, const char *path, size_t pathlen)
+void				add_subdirs_to_dirs(t_fileinfo **dirs, t_fileinfo *subdirs)
 {
-	char	dir_name[PATH_MAX + 2 + 1];
+	t_fileinfo	*ptr;
 
-	ft_memcpy(dir_name, path, MIN(pathlen, PATH_MAX));
-	ft_strcpy(dir_name + pathlen, ":\n");
-	pathlen += 2;
-	strtobuf(info, dir_name, pathlen);
+	ptr = subdirs;
+	while (ptr->next)
+		ptr = ptr->next;
+	ptr->next = (*dirs);
+	(*dirs) = subdirs;
 }
 
 static void			print_total_blocks(t_ls *info, blkcnt_t total_blocks)
 {
-	char	cbuf[5 + 1 + INT_BUFSIZE_BOUND(blkcnt_t) + 1 + 1];
+	char	buf[5 + 1 + INT_BUFSIZE_BOUND(blkcnt_t) + 1 + 1];
 	char	*endptr;
 	char	*startptr;
 	size_t	len;
 
-	ft_strcpy(cbuf, "total ");
-	endptr = cbuf + sizeof(cbuf) - 1;
+	ft_bzero(buf, INT_BUFSIZE_BOUND(blkcnt_t) + 8);
+	ft_strcpy(buf, "total ");
+	endptr = buf + sizeof(buf) - 1;
 	*endptr-- = 0;
 	*endptr = '\n';
 	startptr = ft_ultoa(endptr, total_blocks, total_blocks < 0);
 	++endptr;
 	len = endptr - startptr;
-	ft_memmove(cbuf + 6, startptr, len);
-	strtobuf(info, cbuf, len + 6);
+	ft_memmove(buf + 6, startptr, len);
+	strtobuf(info, buf, len + 6);
 }
 
-static blkcnt_t		loop(t_ls *info, DIR *dirp, t_fileinfo **entries)
+static blkcnt_t		loop(t_ls *info, DIR *dirp, t_fileinfo **entries,
+		t_fileinfo *dirs)
 {
 	struct dirent	*de;
 	t_fileinfo		*fp;
@@ -79,16 +82,17 @@ static blkcnt_t		loop(t_ls *info, DIR *dirp, t_fileinfo **entries)
 	{
 		if (display_entry(de->d_name, info->options))
 		{
-			fp = init_node(info->dirs, de, *info);
+			fp = init_node(dirs, de, *info);
+			if (!info->found_major_minor_dev &&
+					(fp->stat_ok ?
+					S_ISBLK(fp->sbuf.st_mode) || S_ISCHR(fp->sbuf.st_mode) :
+					fp->filetype == CHARDEV || fp->filetype == BLOCKDEV))
+				info->found_major_minor_dev = true;
 			if (fp->stat_ok && info->options & LONG_LIST)
 			{
 				update_max_values(info, fp);
 				total_blocks += fp->sbuf.st_blocks;
 			}
-			if (!info->found_major_minor_dev && (fp->stat_ok ?
-					S_ISBLK(fp->sbuf.st_mode) || S_ISCHR(fp->sbuf.st_mode) :
-					fp->filetype == CHARDEV || fp->filetype == BLOCKDEV))
-				info->found_major_minor_dev = true;
 			lstinsert(entries, fp, *info);
 		}
 	}
@@ -98,16 +102,17 @@ static blkcnt_t		loop(t_ls *info, DIR *dirp, t_fileinfo **entries)
 void				read_current_dir(t_ls *info, t_fileinfo **entries,
 		t_fileinfo **dirs, DIR *dirp)
 {
-	t_fileinfo		*tmp;
+	t_fileinfo		*subdirs;
 	blkcnt_t		total_blocks;
 
-	tmp = NULL;
-	total_blocks = loop(info, dirp, entries);
+	subdirs = NULL;
+	total_blocks = loop(info, dirp, entries, *dirs);
 	lstdel_head(dirs);
 	if (info->options & LONG_LIST && *entries)
 		print_total_blocks(info, total_blocks);
-	display_entries(entries, &tmp, info);
-	add_subdirs_to_dirs(dirs, tmp);
+	display_entries(entries, &subdirs, info);
+	if (subdirs)
+		add_subdirs_to_dirs(dirs, subdirs);
 	if (*dirs)
 		chartobuf(info, '\n');
 }

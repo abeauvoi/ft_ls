@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/07 05:53:36 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/22 21:10:51 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/05/23 00:23:38 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void		get_colors(t_ls *info)
 	char		*lscolors;
 	char		*p;
 
-	if (info->colored_output && (lscolors = getenv("LSCOLORS")) != NULL)
+	if ((lscolors = getenv("LSCOLORS")) != NULL)
 	{
 		i = 0;
 		while (*lscolors && i < COLOR_INDEXES)
