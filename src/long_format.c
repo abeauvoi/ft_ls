@@ -6,7 +6,7 @@
 /*   By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 04:51:12 by abeauvoi          #+#    #+#             */
-/*   Updated: 2018/05/21 06:26:03 by abeauvoi         ###   ########.fr       */
+/*   Updated: 2018/06/06 20:20:57 by abeauvoi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,8 @@
 static inline char	get_xattr(const char *path)
 {
 	acl_t		acl;
-	acl_entry_t	entry;
 	int			ret;
 
-	acl = acl_get_file(path, ACL_TYPE_EXTENDED);
-	if (!acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &entry) == -1)
-	{
-		acl_free(acl);
-		acl = NULL;
-	}
 	if ((ret = listxattr(path, NULL, 0, XATTR_NOFOLLOW)) < 0
 			&& (errno == EPERM || errno == EACCES || errno == EFAULT))
 	{
@@ -34,8 +27,12 @@ static inline char	get_xattr(const char *path)
 	}
 	else if (ret > 0)
 		return ('@');
-	else if (acl)
+	acl = acl_get_link_np(path, ACL_TYPE_EXTENDED);
+	if (acl)
+	{
+		acl_free(acl);
 		return ('+');
+	}
 	return (' ');
 }
 

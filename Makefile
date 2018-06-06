@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/05/17 15:44:28 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/05/21 05:08:05 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/05/23 03:31:59 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ SRCS		= main.c print_err.c parse_argv.c core.c print_usage.c \
 #
 
 OBJS		= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
-CFLAGS		= -Wall -Werror -Wextra $(addprefix -I, $(INC_DIRS))
+CFLAGS		= -Wall -Werror -Wextra -O3 $(addprefix -I, $(INC_DIRS))
 LFLAGS		= -L$(LIB_DIR) -lft
 LIB		= libft.a
 COMP		= $(CC) $(CFLAGS) -o $@ -c $<

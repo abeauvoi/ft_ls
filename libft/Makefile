@@ -6,7 +6,7 @@
 #    By: abeauvoi <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/11 18:23:33 by abeauvoi          #+#    #+#              #
-#    Updated: 2018/04/07 05:54:45 by abeauvoi         ###   ########.fr        #
+#    Updated: 2018/05/23 03:32:24 by abeauvoi         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ SRCS = ft_abs.c ft_atoi.c ft_atoi_skip.c \
 #
 
 OBJS = $(addprefix $(OBJ_DIR)/,$(SRCS:.c=.o))
-CFLAGS = -Wall -Werror -Wextra -I$(INC_DIR)
+CFLAGS = -Wall -Werror -Wextra -O3 -I$(INC_DIR)
 COMP = $(CC) $(CFLAGS) -c $< -o $@
 ARCH = $(AR) rc $@ $^
 
